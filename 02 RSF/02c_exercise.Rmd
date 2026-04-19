@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Let's apply what we've learned about RSFs. Refer to the lecture slides (<a href="02a_lecture.html" target="_blank" rel="noopener noreferrer">02a_lecture.html</a>) and the walkthrough code (`02b_walkthrough.R`) as a refresher.
 
-We encourage you to use your own data for this exercise. We will be available while you are working to answer any questions.
+We encourage you to use your own data for this exercise.
 
 If you don't have your own data, you can use example data built into `amt`. You can access the fisher data and some covariate rasters like this:
 
@@ -28,7 +28,7 @@ library(amt)
 dat <- amt_fisher
 
 # Habitat data as list
-hab <- amt_fisher_covar
+hab <- get_amt_fisher_covars()
 
 ```
 

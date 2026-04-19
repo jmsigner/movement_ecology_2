@@ -400,8 +400,7 @@ slides
 (<a href="02a_lecture.html" target="_blank" rel="noopener noreferrer">02a_lecture.html</a>)
 and the walkthrough code (<code>02b_walkthrough.R</code>) as a
 refresher.</p>
-<p>We encourage you to use your own data for this exercise. We will be
-available while you are working to answer any questions.</p>
+<p>We encourage you to use your own data for this exercise.</p>
 <p>If you don’t have your own data, you can use example data built into
 <code>amt</code>. You can access the fisher data and some covariate
 rasters like this:</p>
@@ -412,7 +411,7 @@ library(amt)
 dat &lt;- amt_fisher
 
 # Habitat data as list
-hab &lt;- amt_fisher_covar</code></pre>
+hab &lt;- get_amt_fisher_covars()</code></pre>
 <p>We will go over how to model multiple animals in a later module, so
 for now, subset your data (or the fisher data) to just one animal.</p>
 <div id="instructions" class="section level2">
