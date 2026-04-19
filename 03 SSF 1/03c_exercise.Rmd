@@ -1,7 +1,11 @@
 ---
 title: "Fitting an integrated Step Selection Function"
 author: "Johannes Signer"
+<<<<<<< HEAD
 date: "April 2026"
+=======
+date: "March 2025"
+>>>>>>> d8db6349ddd328ba637de02d3b1ccbcb8fff7852
 output: 
   html_document:
     theme: null
@@ -26,3 +30,8 @@ If you don't have your own data, you can use example data built into `amt`.
 3. Use `Leroy` and create 15 random steps for each observed step. 
 4. Extract covariates at the end of each step for elevation. A raster with the elevation data is also shipped with `amt` and you can get the elevation by executing `data(amt_fisher_covar)`.  This returns a list with three covariates, we are only interested in elevation. To access elevation you can use: `amt_fisher$elevation`.
 5. Fit a SSF an SSF, where you use elevation as the only covariate.
+<<<<<<< HEAD
+=======
+6. What is the log-RSS for a step ending at different elevations. Choose a suitable range of elevations.
+7. Finally fit an `iSSF` where you include in addition to `elevation` also the step length the log of the step length and the cosine of the turn angle.
+>>>>>>> d8db6349ddd328ba637de02d3b1ccbcb8fff7852

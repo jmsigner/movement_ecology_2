@@ -27,3 +27,28 @@ leroy <- leroy |> extract_covariates(amt_fisher_covar$elevation)
 m1 <- leroy |> fit_ssf(case_ ~ elevation + strata(step_id_), model = TRUE)
 summary(m1)
 
+<<<<<<< HEAD
+=======
+# 6. What is the log-RSS for a step ending at different elevations. Choose a suitable range of elevations.
+range(leroy$elevation, na.rm = TRUE)
+s1 <- data.frame(
+  elevation = 80:120
+)
+s2 <- data.frame(
+  elevation = 100
+)
+logrss <- log_rss(m1, s1, s2, ci = "se")
+
+logrss$df
+ggplot(logrss$df, aes(x = elevation_x1, y = log_rss)) + geom_line()
+ggplot(logrss$df, aes(x = elevation_x1, y = log_rss)) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.2) +
+  geom_line() 
+    
+ggplot(logrss$df, aes(x = elevation_x1, y = exp(log_rss))) + geom_line()
+
+# 7. Finally fit an `iSSF` where you include in addition to `elevation` also the step length the log of the step length and the cosine of the turn angle.
+m2 <- leroy |> fit_ssf(case_ ~ elevation + sl_ + log(sl_) + cos(ta_) + strata(step_id_))
+summary(m2)
+
+>>>>>>> d8db6349ddd328ba637de02d3b1ccbcb8fff7852
