@@ -1,0 +1,62 @@
+---
+title: "GAM-SSF Exercise"
+author: "Brian J. Smith"
+date: "22 April 2026"
+output: 
+  html_document:
+    theme: default
+    css: "../css/exercises.css"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<br>
+
+Let's apply what we've learned about GAM-SSFs. Refer to the lecture slides (<a href="07a_lecture.html" target="_blank" rel="noopener noreferrer">07a_lecture.html</a>) and the walkthrough code (`07b_walkthrough.R`) as a refresher.
+
+We encourage you to use your own data for this exercise.
+
+If you don't have your own data, you can use example data built into `amt`. You can access the fisher data and some covariate rasters like this:
+
+```{r amt_fisher, eval = FALSE}
+# Load `amt`
+library(amt)
+
+# Location data as 'track_xyt'
+dat <- amt_fisher
+
+# Habitat data as list
+hab <- get_amt_fisher_covars()
+
+```
+
+## Instructions
+
+*Warning: complex GAMs can take a long time to fit. If this is your first attempt, consider starting with a simple model!*
+
+1. Load your data or the example data. Subset to a single individual.
+
+    * Recall that iSSFs assume a constant step duration. Make sure your data are (within a reasonable tolerance) regularly sampled before you continue.
+    * You will want a fairly large sample size to accomodate a wiggly function.
+    
+2. Fit an iSSF using a GAM with at least one smooth term. Choose from:
+
+    * Non-linear selection.
+    * Time-varying selection.
+    * Spatial random effects.
+
+3. If you'd like, you can also include random slopes and/or hierarchical smooths.
+    
+4. Make at least one plot showing the RSS (or log-RSS) for one of your habitat variables.
+
+    * Recall, $RSS(x_1, x_2) = w(x_1)/w(x_2)$.
+    * What does this plot tell you about the biology of your system?
+    
+
+<br>
+<hr>
+<br>
+
+

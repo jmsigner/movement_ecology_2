@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="07a_lecture_files/libs/clipboard/clipboard.min.js"></script>
+<script src="07a_lecture_files/libs/quarto-html/tabby.min.js"></script>
+<script src="07a_lecture_files/libs/quarto-html/popper.min.js"></script>
+<script src="07a_lecture_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="07a_lecture_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="07a_lecture_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="07a_lecture_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="07a_lecture_files/libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="07a_lecture_files/libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="07a_lecture_files/libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.27">
+
+  <meta name="author" content="Brian J. Smith">
+  <meta name="dcterms.date" content="2026-04-22">
+  <title>SSFs with Generalized Additive Models</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="07a_lecture_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="07a_lecture_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="07a_lecture_files/libs/revealjs/dist/theme/quarto-7fa51a03d2289eb9f8a6e0d482096f58.css">
+  <link href="07a_lecture_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="07a_lecture_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="07a_lecture_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="07a_lecture_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">SSFs with Generalized Additive Models</h1>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Brian J. Smith 
+</div>
+</div>
+</div>
+
+  <p class="date">2026-04-22</p>
+</section>
+<section id="ssfs-with-gams" class="slide level2">
+<h2>SSFs with GAMs</h2>
+<div class="columns">
+<div class="column" style="width:45%;">
+<ul>
+<li>In module 5 (SSFs, part 2), we used interactions in our models to allow selection to vary as a <em>function</em> of another covariate.
+<ul>
+<li>We used linear functions.</li>
+<li>We used quadratic functions.</li>
+</ul></li>
+<li>Now, we want to generalize that further and <em>estimate the function</em>.</li>
+</ul>
+</div><div class="column" style="width:5%;">
+
+</div><div class="column" style="width:45%;">
+<p><br></p>
+<center>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="../05%20SSF%202/figs/beta_star_1.png"></p>
+<figcaption>Selection for <span class="math inline">\(x_1\)</span> as a linear function of <span class="math inline">\(x_2\)</span>.</figcaption>
+</figure>
+</div>
+</center>
+</div></div>
+</section>
+<section id="ssfs-with-gams-1" class="slide level2">
+<h2>SSFs with GAMs</h2>
+<h3 id="outline">Outline</h3>
+<div class="columns">
+<div class="column" style="width:45%;">
+<ul>
+<li>Intro to GAMs
+<ul>
+<li>Estimating unknown functions</li>
+<li>Basis expansions</li>
+<li>Penalizing complexity</li>
+</ul></li>
+</ul>
+</div><div class="column" style="width:5%;">
+
+</div><div class="column" style="width:45%;">
+<ul>
+<li>SSFs with GAMs
+<ul>
+<li>Nonlinear selection</li>
+<li>Random slopes</li>
+<li>Spatial “random effects” (<em>e.g.</em>, Gaussian process models)</li>
+<li>Time-varying selection</li>
+</ul></li>
+</ul>
+</div></div>
+</section>
+<section>
+<section id="estimating-unknown-functions" class="title-slide slide level1 center">
+<h1>Estimating Unknown Functions</h1>
+
+</section>
+<section id="general-setup-for-gams" class="slide level2">
+<h2>General Setup for GAMs</h2>
+<p><br></p>
+<p>The goal with a GAM is to estimate an <strong>unknown function</strong> that relates the mean of the random variable to covariates.</p>
+<p><span class="math display">\[\mu = f(x)\]</span> <span class="math display">\[y \sim Normal(\mu, \sigma^2)\]</span></p>
+<p>If we want to use standard regression methods to estimate <span class="math inline">\(f\)</span>, then we want to represent it such that the equation above becomes a linear model.</p>
+</section>
+<section id="general-setup-for-gams-1" class="slide level2">
+<h2>General Setup for GAMs</h2>
+<p><br></p>
+<p>We can do this by choosing a <a href="https://en.wikipedia.org/wiki/Basis_(linear_algebra)" target="blank"><strong>basis</strong></a> of which <span class="math inline">\(f\)</span> (or an approximation of <span class="math inline">\(f\)</span>) is an element.</p>
+<p><br></p>
+<p>That is, we should choose a <strong>basis</strong> that is made of <a href="https://en.wikipedia.org/wiki/Basis_function"><strong>basis functions</strong></a> that can approximate nearly any smooth function.</p>
+<p><br></p>
+<p>Each of those basis functions gets weighted with a coefficient (i.e., a <span class="math inline">\(\beta\)</span>) and summed together to represent <span class="math inline">\(f\)</span>.</p>
+</section></section>
+<section>
+<section id="basis-expansions" class="title-slide slide level1 center">
+<h1>Basis Expansions</h1>
+
+</section>
+<section id="basis-expansions-1" class="slide level2">
+<h2>Basis Expansions</h2>
+<p><br></p>
+<p>A <strong>basis</strong> you are probably already familiar with is polynomials.</p>
+<p><br></p>
+<p>The basis functions for a polynomial basis take the form:</p>
+<p><span class="math display">\[x^k ; k \ge 0\]</span></p>
+</section>
+<section id="basis-expansions-2" class="slide level2">
+<h2>Basis Expansions</h2>
+<p><br></p>
+<p>A <strong>basis</strong> you are probably already familiar with is polynomials.</p>
+<p><br></p>
+<p>The basis functions for a polynomial basis take the form:</p>
+<p><span class="math display">\[x^k ; k \ge 0\]</span></p>
+<p>So a polynomial basis expansion with two basis functions would be:</p>
+<p><span class="math display">\[\beta_0 x^0 + \beta_1 x^1 = \beta_0 +\beta_1 x\]</span></p>
+</section>
+<section id="basis-expansions-3" class="slide level2">
+<h2>Basis Expansions</h2>
+<p><br></p>
+<p>A <strong>basis</strong> you are probably already familiar with is polynomials.</p>
+<p><br></p>
+<p>The basis functions for a polynomial basis take the form:</p>
+<p><span class="math display">\[x^k ; k \ge 0\]</span></p>
+<p>So a polynomial basis expansion with two basis functions would be:</p>
+<p><span class="math display">\[\beta_0 x^0 + \beta_1 x^1 = \beta_0 +\beta_1 x\]</span></p>
+<p>And a polynomial basis expansion with four basis functions would be:</p>
+<p><span class="math display">\[\beta_0 x^0 + \beta_1 x^1 + \beta_2 x^2 + \beta_3 x^3\]</span></p>
+</section>
+<section id="basis-expansions-4" class="slide level2">
+<h2>Basis Expansions</h2>
+<ul>
+<li>Consider these data I simulated (i.e., I know the true generating function).</li>
+<li>We can fit an ordinary linear model to these data, using polynomial basis expansions.</li>
+</ul>
+
+<img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-1-1.png" width="960" class="r-stretch"></section>
+<section id="basis-expansions-5" class="slide level2">
+<h2>Basis Expansions</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href=""></a>poly1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x)</span>
+<span id="cb1-2"><a href=""></a></span>
+<span id="cb1-3"><a href=""></a><span class="fu">plot</span>(x, y, <span class="at">main =</span> <span class="st">"First Order Polynomial"</span>,</span>
+<span id="cb1-4"><a href=""></a>     <span class="at">sub =</span> <span class="fu">expression</span>(y <span class="sc">==</span> beta[<span class="dv">0</span>] <span class="sc">+</span> beta[<span class="dv">1</span>]<span class="sc">*</span>x))</span>
+<span id="cb1-5"><a href=""></a><span class="fu">abline</span>(poly1, <span class="at">col =</span> <span class="dv">1</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-2-1.png" width="960" class="r-stretch"></section>
+<section id="basis-expansions-6" class="slide level2">
+<h2>Basis Expansions</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href=""></a>poly2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb2-2"><a href=""></a></span>
+<span id="cb2-3"><a href=""></a><span class="fu">plot</span>(x, y, <span class="at">main =</span> <span class="st">"Second Order Polynomial"</span>,</span>
+<span id="cb2-4"><a href=""></a>     <span class="at">sub =</span> <span class="fu">expression</span>(y <span class="sc">==</span> beta[<span class="dv">0</span>] <span class="sc">+</span> beta[<span class="dv">1</span>]<span class="sc">*</span>x <span class="sc">+</span> beta[<span class="dv">2</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb2-5"><a href=""></a>pred2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>, <span class="at">length.out =</span> <span class="dv">200</span>))</span>
+<span id="cb2-6"><a href=""></a>pred2<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">predict</span>(poly2, <span class="at">newdata =</span> pred2)</span>
+<span id="cb2-7"><a href=""></a><span class="fu">lines</span>(pred2<span class="sc">$</span>x, pred2<span class="sc">$</span>y, <span class="at">col =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
+<section id="basis-expansions-7" class="slide level2">
+<h2>Basis Expansions</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href=""></a>poly3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">3</span>))</span>
+<span id="cb3-2"><a href=""></a></span>
+<span id="cb3-3"><a href=""></a><span class="fu">plot</span>(x, y, <span class="at">main =</span> <span class="st">"Third Order Polynomial"</span>,</span>
+<span id="cb3-4"><a href=""></a>     <span class="at">sub =</span> <span class="fu">expression</span>(y <span class="sc">==</span> beta[<span class="dv">0</span>] <span class="sc">+</span> beta[<span class="dv">1</span>]<span class="sc">*</span>x <span class="sc">+</span> beta[<span class="dv">2</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> beta[<span class="dv">3</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">3</span>))</span>
+<span id="cb3-5"><a href=""></a>pred3 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>, <span class="at">length.out =</span> <span class="dv">200</span>))</span>
+<span id="cb3-6"><a href=""></a>pred3<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">predict</span>(poly3, <span class="at">newdata =</span> pred3)</span>
+<span id="cb3-7"><a href=""></a><span class="fu">lines</span>(pred3<span class="sc">$</span>x, pred3<span class="sc">$</span>y, <span class="at">col =</span> <span class="dv">3</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-4-1.png" width="960" class="r-stretch"></section>
+<section id="basis-expansions-8" class="slide level2">
+<h2>Basis Expansions</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href=""></a>poly6 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">3</span>) <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">4</span>) <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">5</span>) <span class="sc">+</span> <span class="fu">I</span>(x<span class="sc">^</span><span class="dv">6</span>))</span>
+<span id="cb4-2"><a href=""></a></span>
+<span id="cb4-3"><a href=""></a><span class="fu">plot</span>(x, y, <span class="at">main =</span> <span class="st">"Sixth Order Polynomial"</span>,</span>
+<span id="cb4-4"><a href=""></a>     <span class="at">sub =</span> <span class="fu">expression</span>(y <span class="sc">==</span> beta[<span class="dv">0</span>] <span class="sc">+</span> beta[<span class="dv">1</span>]<span class="sc">*</span>x <span class="sc">+</span> beta[<span class="dv">2</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> beta[<span class="dv">3</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">3</span> <span class="sc">+</span> beta[<span class="dv">4</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">4</span> <span class="sc">+</span> beta[<span class="dv">5</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">5</span> <span class="sc">+</span> beta[<span class="dv">6</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">6</span>))</span>
+<span id="cb4-5"><a href=""></a>pred6 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>, <span class="at">length.out =</span> <span class="dv">200</span>))</span>
+<span id="cb4-6"><a href=""></a>pred6<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">predict</span>(poly6, <span class="at">newdata =</span> pred6)</span>
+<span id="cb4-7"><a href=""></a><span class="fu">lines</span>(pred6<span class="sc">$</span>x, pred6<span class="sc">$</span>y, <span class="at">col =</span> <span class="dv">4</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-5-1.png" width="960" class="r-stretch"></section>
+<section id="basis-expansions-9" class="slide level2">
+<h2>Basis Expansions</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href=""></a>poly10 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">10</span>))</span>
+<span id="cb5-2"><a href=""></a></span>
+<span id="cb5-3"><a href=""></a><span class="fu">plot</span>(x, y, <span class="at">main =</span> <span class="st">"Tenth Order Polynomial"</span>,</span>
+<span id="cb5-4"><a href=""></a>     <span class="at">sub =</span> <span class="fu">expression</span>(y <span class="sc">==</span> beta[<span class="dv">0</span>] <span class="sc">+</span> beta[<span class="dv">1</span>]<span class="sc">*</span>x <span class="sc">+</span> beta[<span class="dv">2</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> beta[<span class="dv">3</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">3</span> <span class="sc">+</span> beta[<span class="dv">4</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">4</span> <span class="sc">+</span> beta[<span class="dv">5</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">5</span> <span class="sc">+</span> beta[<span class="dv">6</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">6</span> <span class="sc">+</span> beta[<span class="dv">7</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">7</span> <span class="sc">+</span> beta[<span class="dv">8</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">8</span> <span class="sc">+</span> beta[<span class="dv">9</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">9</span> <span class="sc">+</span> beta[<span class="dv">10</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">10</span>))</span>
+<span id="cb5-5"><a href=""></a>pred10 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>, <span class="at">length.out =</span> <span class="dv">200</span>))</span>
+<span id="cb5-6"><a href=""></a>pred10<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">predict</span>(poly10, <span class="at">newdata =</span> pred10)</span>
+<span id="cb5-7"><a href=""></a><span class="fu">lines</span>(pred10<span class="sc">$</span>x, pred10<span class="sc">$</span>y, <span class="at">col =</span> <span class="dv">5</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"></section>
+<section id="basis-expansions-10" class="slide level2">
+<h2>Basis Expansions</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href=""></a>poly25 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="dv">25</span>))</span>
+<span id="cb6-2"><a href=""></a></span>
+<span id="cb6-3"><a href=""></a><span class="fu">plot</span>(x, y, <span class="at">main =</span> <span class="st">"Twenty-fifth Order Polynomial"</span>,</span>
+<span id="cb6-4"><a href=""></a>     <span class="at">sub =</span> <span class="fu">expression</span>(y <span class="sc">==</span> beta[<span class="dv">0</span>] <span class="sc">+</span> beta[<span class="dv">1</span>]<span class="sc">*</span>x <span class="sc">+</span> beta[<span class="dv">2</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> ... <span class="sc">+</span> beta[<span class="dv">24</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">24</span> <span class="sc">+</span>beta[<span class="dv">25</span>]<span class="sc">*</span>x<span class="sc">^</span><span class="dv">25</span>))</span>
+<span id="cb6-5"><a href=""></a>pred25 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">1.2</span>, <span class="fl">1.2</span>, <span class="at">length.out =</span> <span class="dv">200</span>))</span>
+<span id="cb6-6"><a href=""></a>pred25<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="fu">predict</span>(poly25, <span class="at">newdata =</span> pred25)</span>
+<span id="cb6-7"><a href=""></a><span class="fu">lines</span>(pred25<span class="sc">$</span>x, pred25<span class="sc">$</span>y, <span class="at">col =</span> <span class="dv">6</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"></section>
+<section id="basis-expansions-11" class="slide level2">
+<h2>Basis Expansions</h2>
+
+<img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"></section>
+<section id="basis-expansions-12" class="slide level2">
+<h2>Basis Expansions</h2>
+<p><br></p>
+<p>You may have noticed two things along the way here.</p>
+<ol type="1">
+<li>The higher degree polynomials predict extreme values at the edges.</li>
+<li>We didn’t get much improvement from a 10th-degree polynomial to a 25th-degree polynomial, even though we estimated an extra 15 parameters.</li>
+</ol>
+</section>
+<section id="basis-expansions-13" class="slide level2">
+<h2>Basis Expansions</h2>
+<p>While we use them all the time, polynomial basis expansions aren’t actually all that great for our problem.</p>
+<ul>
+<li>They often predict extreme values with small <strong>extrapolations</strong>.</li>
+<li>They can oscillate wildly in between data points (so can be bad for <strong>interpolation</strong>).</li>
+</ul>
+
+<img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="basis-expansions-14" class="slide level2">
+<h2>Basis Expansions</h2>
+<p>We need some method to obtain <em>parsimony</em>. Just from the eye test, it doesn’t seem like it’s worth it to use a 25th-degree polynomial over a 10th-degree polynomial.</p>
+
+<img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-10-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960"></section>
+<section id="basis-expansions-15" class="slide level2">
+<h2>Basis Expansions</h2>
+<p><br></p>
+<p>You may have noticed two things along the way here:</p>
+<ul>
+<li>The higher degree polynomials predict extreme values at the edges.
+<ul>
+<li><em>Solution</em>: spline basis<br>
+</li>
+</ul></li>
+<li>We didn’t get much improvement from a 10th-degree polynomial to a 25th-degree polynomial, even though we estimated an extra 15 parameters.
+<ul>
+<li><em>Solution</em>: penalize for complexity with a smoothing parameter</li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="splines" class="title-slide slide level1 center">
+<h1>Splines</h1>
+
+</section>
+<section id="cubic-regression-splines" class="slide level2 smaller">
+<h2>Cubic Regression Splines</h2>
+<ul>
+<li>A <a href="https://en.wikipedia.org/wiki/Spline_(mathematics)" target="blank"><strong>spline</strong></a> is just a set of weighted basis functions. Splines are constructed from piecewise functions that fit together smoothly (without sharp edges).</li>
+<li>It turns out, <strong>cubic splines</strong> are the smoothest possible interpolants through any set of data. (See Chapter 5, p.&nbsp;197 of Wood 2017). <strong>Cubic splines</strong> are sections of cubic polynomials <em>between every data point</em>.</li>
+<li><strong>Cubic <em>regression</em> splines</strong> are sections of cubic polynomial, defined piecewise between user-defined <strong>knots</strong>.</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="07a_lecture_files/figure-revealjs/unnamed-chunk-11-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-11-1.png" class="quarto-figure quarto-figure-center" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="cubic-regression-splines-1" class="slide level2">
+<h2>Cubic Regression Splines</h2>
+<p>Here are the 10 basis functions plotted separately:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="07a_lecture_files/figure-revealjs/unnamed-chunk-12-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-12-1.png" class="quarto-figure quarto-figure-center" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="cubic-regression-splines-2" class="slide level2">
+<h2>Cubic Regression Splines</h2>
+<p>We can give each one a weight (a <span class="math inline">\(\beta\)</span> coefficient) and sum them up. For example, we can weight all 10 with <span class="math inline">\(\beta_i = 1\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="07a_lecture_files/figure-revealjs/unnamed-chunk-13-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-13-1.png" class="quarto-figure quarto-figure-center" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="cubic-regression-splines-3" class="slide level2">
+<h2>Cubic Regression Splines</h2>
+<p>We can alternate <span class="math inline">\(\beta\)</span>s between -1 and + 1.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="07a_lecture_files/figure-revealjs/unnamed-chunk-14-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-14-1.png" class="quarto-figure quarto-figure-center" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="cubic-regression-splines-4" class="slide level2">
+<h2>Cubic Regression Splines</h2>
+<p>We can try a bunch of other values, like this:</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 13%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><span class="math inline">\(\beta_1\)</span></th>
+<th><span class="math inline">\(\beta_2\)</span></th>
+<th><span class="math inline">\(\beta_3\)</span></th>
+<th><span class="math inline">\(\beta_4\)</span></th>
+<th><span class="math inline">\(\beta_5\)</span></th>
+<th><span class="math inline">\(\beta_6\)</span></th>
+<th><span class="math inline">\(\beta_7\)</span></th>
+<th><span class="math inline">\(\beta_8\)</span></th>
+<th><span class="math inline">\(\beta_9\)</span></th>
+<th><span class="math inline">\(\beta_{10}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>5</td>
+<td>-2</td>
+<td>-3</td>
+<td>- 5</td>
+<td>1</td>
+<td>2</td>
+<td>4</td>
+<td>2</td>
+<td>0</td>
+<td>-3</td>
+</tr>
+</tbody>
+</table>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="07a_lecture_files/figure-revealjs/unnamed-chunk-15-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-15-1.png" class="quarto-figure quarto-figure-center" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="cubic-regression-splines-5" class="slide level2">
+<h2>Cubic Regression Splines</h2>
+<p>We can try evenly spaced <span class="math inline">\(\beta\)</span>s, for example, ranging from 0 to 2.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="07a_lecture_files/figure-revealjs/unnamed-chunk-16-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-16-1.png" class="quarto-figure quarto-figure-center" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="smoothing" class="title-slide slide level1 center">
+<h1>Smoothing</h1>
+
+</section>
+<section id="penalizing-complexity" class="slide level2">
+<h2>Penalizing Complexity</h2>
+<p>Now, back to the problem of <em>parsimony</em>. How can we decide how many basis functions (or knots) sufficiently represent our function?</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="07a_lecture_files/figure-revealjs/unnamed-chunk-17-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-17-1.png" class="quarto-figure quarto-figure-center" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="penalizing-complexity-1" class="slide level2">
+<h2>Penalizing Complexity</h2>
+<ul>
+<li>Earlier today, we focused on using <strong>maximum likelihood estimation</strong> to estimate <span class="math inline">\(\hat{\boldsymbol{\beta}}\)</span>.
+<ul>
+<li>We could do that, but there’s a good chance we don’t need all the basis functions we might propose.</li>
+<li>Such flexible models are prone to <strong>overfitting</strong>.</li>
+</ul></li>
+<li>We could use model selection (e.g., AIC) to decide which of the basis functions to keep in our model.
+<ul>
+<li>The problem is that a basis with 9 evenly spaced knots is not nested within a basis with 10 evenly spaced knots.</li>
+</ul></li>
+<li>Instead, we could introduce a <strong>penalty</strong> to our fitting criterion.
+<ul>
+<li>Rather than finding <span class="math inline">\(\hat{\boldsymbol{\beta}}\)</span> that maximizes the (log) likelihood, we find the <span class="math inline">\(\hat{\boldsymbol{\beta}}\)</span> that maximizes the log-likelihood minus a penalty.</li>
+</ul></li>
+</ul>
+</section>
+<section id="penalizing-complexity-2" class="slide level2">
+<h2>Penalizing Complexity</h2>
+<p>The penalty should be applied to <span class="math inline">\(f\)</span> based on how “wiggly” it is.</p>
+<center>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="img/worm.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Wiggly"><img data-src="img/worm.gif" style="width:60.0%" alt="Wiggly"></a></p>
+<figcaption>Wiggly</figcaption>
+</figure>
+</div>
+</center>
+</section>
+<section id="penalizing-complexity-3" class="slide level2">
+<h2>Penalizing Complexity</h2>
+<p><br></p>
+<p>Wiggliness (the proper term) is defined by the second derivative of the function <span class="math inline">\(f\)</span>.</p>
+<p><span class="math display">\[\int_{\mathbb{R}} [f^{\prime\prime}]^2 dx = \boldsymbol{\beta}^{\mathsf{T}}\mathbf{S}\boldsymbol{\beta} = \large{W}\]</span></p>
+<p>It can be written as a function of the vector <span class="math inline">\(\boldsymbol{\beta}\)</span> and a penalty matrix, <span class="math inline">\(\mathbf{S}\)</span>, which is specific to the basis chosen.</p>
+<p>For simplicity, we’ll refer to the wiggliness as <span class="math inline">\(W\)</span>.</p>
+</section>
+<section id="penalizing-complexity-4" class="slide level2">
+<h2>Penalizing Complexity</h2>
+<p>Rather than estimating the parameters of the model with maximum likelihood:</p>
+<p><span class="math display">\[\hat{\theta} = \mathrm{arg\ max}\  \mathcal{L}(\theta | \mathbf{y})\]</span></p>
+<p>We now use penalized maximum likelihood:</p>
+<p><span class="math display">\[\hat{\theta} = \mathrm{arg\ max}\  [\log(\mathcal{L}(\theta | \mathbf{y})) - \lambda W]\]</span></p>
+<p>But we’re still left with a parameter <span class="math inline">\((\lambda)\)</span> that we need to choose.</p>
+<p>We will refer to <span class="math inline">\(\lambda\)</span> as the <strong>smoothing parameter</strong>.</p>
+</section>
+<section id="penalizing-complexity-5" class="slide level2">
+<h2>Penalizing Complexity</h2>
+<p>We can choose the smoothing parameter manually.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href=""></a><span class="co"># No penalty</span></span>
+<span id="cb7-2"><a href=""></a>sm_no <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">bs =</span> <span class="st">"cr"</span>, <span class="at">k =</span> <span class="dv">50</span>), <span class="at">data =</span> dat,</span>
+<span id="cb7-3"><a href=""></a>             <span class="at">method =</span> <span class="st">"REML"</span>, <span class="at">sp =</span> <span class="dv">0</span>)</span>
+<span id="cb7-4"><a href=""></a></span>
+<span id="cb7-5"><a href=""></a><span class="co"># Low penalty</span></span>
+<span id="cb7-6"><a href=""></a>sm_lo <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">bs =</span> <span class="st">"cr"</span>, <span class="at">k =</span> <span class="dv">50</span>), <span class="at">data =</span> dat,</span>
+<span id="cb7-7"><a href=""></a>             <span class="at">method =</span> <span class="st">"REML"</span>, <span class="at">sp =</span> <span class="dv">10</span>)</span>
+<span id="cb7-8"><a href=""></a></span>
+<span id="cb7-9"><a href=""></a><span class="co"># Medium penalty</span></span>
+<span id="cb7-10"><a href=""></a>sm_med <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">bs =</span> <span class="st">"cr"</span>, <span class="at">k =</span> <span class="dv">50</span>), <span class="at">data =</span> dat,</span>
+<span id="cb7-11"><a href=""></a>             <span class="at">method =</span> <span class="st">"REML"</span>, <span class="at">sp =</span> <span class="dv">1000</span>)</span>
+<span id="cb7-12"><a href=""></a></span>
+<span id="cb7-13"><a href=""></a><span class="co"># High penalty</span></span>
+<span id="cb7-14"><a href=""></a>sm_hi <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">bs =</span> <span class="st">"cr"</span>, <span class="at">k =</span> <span class="dv">50</span>), <span class="at">data =</span> dat,</span>
+<span id="cb7-15"><a href=""></a>             <span class="at">method =</span> <span class="st">"REML"</span>, <span class="at">sp =</span> <span class="dv">1000000</span>)</span>
+<span id="cb7-16"><a href=""></a></span>
+<span id="cb7-17"><a href=""></a><span class="co"># Extreme penalty</span></span>
+<span id="cb7-18"><a href=""></a>sm_ex <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">bs =</span> <span class="st">"cr"</span>, <span class="at">k =</span> <span class="dv">50</span>), <span class="at">data =</span> dat,</span>
+<span id="cb7-19"><a href=""></a>             <span class="at">method =</span> <span class="st">"REML"</span>, <span class="at">sp =</span> <span class="dv">100000000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="penalizing-complexity-6" class="slide level2">
+<h2>Penalizing Complexity</h2>
+<p>We can choose the smoothing parameter manually.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href=""></a>pred <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">500</span>))</span>
+<span id="cb8-2"><a href=""></a></span>
+<span id="cb8-3"><a href=""></a><span class="co"># No penalty</span></span>
+<span id="cb8-4"><a href=""></a>pred<span class="sc">$</span>none <span class="ot">&lt;-</span> <span class="fu">predict</span>(sm_no, <span class="at">newdata =</span> pred)</span>
+<span id="cb8-5"><a href=""></a></span>
+<span id="cb8-6"><a href=""></a><span class="co"># Low penalty</span></span>
+<span id="cb8-7"><a href=""></a>pred<span class="sc">$</span>low <span class="ot">&lt;-</span> <span class="fu">predict</span>(sm_lo, <span class="at">newdata =</span> pred)</span>
+<span id="cb8-8"><a href=""></a></span>
+<span id="cb8-9"><a href=""></a><span class="co"># Medium penalty</span></span>
+<span id="cb8-10"><a href=""></a>pred<span class="sc">$</span>medium <span class="ot">&lt;-</span> <span class="fu">predict</span>(sm_med, <span class="at">newdata =</span> pred)</span>
+<span id="cb8-11"><a href=""></a></span>
+<span id="cb8-12"><a href=""></a><span class="co"># High penalty</span></span>
+<span id="cb8-13"><a href=""></a>pred<span class="sc">$</span>high <span class="ot">&lt;-</span> <span class="fu">predict</span>(sm_hi, <span class="at">newdata =</span> pred)</span>
+<span id="cb8-14"><a href=""></a></span>
+<span id="cb8-15"><a href=""></a><span class="co"># Extreme penalty</span></span>
+<span id="cb8-16"><a href=""></a>pred<span class="sc">$</span>extreme <span class="ot">&lt;-</span> <span class="fu">predict</span>(sm_ex, <span class="at">newdata =</span> pred)</span>
+<span id="cb8-17"><a href=""></a></span>
+<span id="cb8-18"><a href=""></a><span class="co"># Pivot longer</span></span>
+<span id="cb8-19"><a href=""></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb8-20"><a href=""></a>pred_long <span class="ot">&lt;-</span> <span class="fu">pivot_longer</span>(pred, none<span class="sc">:</span>extreme, </span>
+<span id="cb8-21"><a href=""></a>                          <span class="at">names_to =</span> <span class="st">"Penalty"</span>,</span>
+<span id="cb8-22"><a href=""></a>                          <span class="at">values_to =</span> <span class="st">"y"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-23"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">Penalty =</span> <span class="fu">factor</span>(Penalty, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"none"</span>, </span>
+<span id="cb8-24"><a href=""></a>                                              <span class="st">"low"</span>, </span>
+<span id="cb8-25"><a href=""></a>                                              <span class="st">"medium"</span>, </span>
+<span id="cb8-26"><a href=""></a>                                              <span class="st">"high"</span>,</span>
+<span id="cb8-27"><a href=""></a>                                              <span class="st">"extreme"</span>)))</span>
+<span id="cb8-28"><a href=""></a></span>
+<span id="cb8-29"><a href=""></a><span class="co"># Plot</span></span>
+<span id="cb8-30"><a href=""></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb8-31"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> dat, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb8-32"><a href=""></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> pred_long, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">color =</span> Penalty),</span>
+<span id="cb8-33"><a href=""></a>            <span class="at">linewidth =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb8-34"><a href=""></a>  <span class="fu">theme_classic</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="07a_lecture_files/figure-revealjs/unnamed-chunk-19-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-19-1.png" class="quarto-figure quarto-figure-center" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="penalizing-complexity-7" class="slide level2">
+<h2>Penalizing Complexity</h2>
+<p><br></p>
+<p>But we can also estimate it from the data.</p>
+<p>According to Gavin Simpson, for reasons of numerical stability, we should use <strong>restricted maximum likelihood</strong> (REML) estimation if we want to estimate <span class="math inline">\(\lambda\)</span> as well as <span class="math inline">\(\boldsymbol{\beta}\)</span>.</p>
+<p>We can do that in R with <code>mgcv::gam(..., method = "REML")</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href=""></a>sm_reml <span class="ot">&lt;-</span> <span class="fu">gam</span>(y <span class="sc">~</span> <span class="fu">s</span>(x, <span class="at">bs =</span> <span class="st">"cr"</span>, <span class="at">k =</span> <span class="dv">50</span>), <span class="at">data =</span> dat,</span>
+<span id="cb9-2"><a href=""></a>             <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb9-3"><a href=""></a></span>
+<span id="cb9-4"><a href=""></a><span class="fu">print</span>(sm_reml<span class="sc">$</span>sp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    s(x) 
+287.8915 </code></pre>
+</div>
+</div>
+</section>
+<section id="penalizing-complexity-8" class="slide level2 smaller">
+<h2>Penalizing Complexity</h2>
+<p>So how did we do? The true generating function for these data was:</p>
+<p><span class="math display">\[\mu = \sin(8x) + 2x^2 -2x + 2\]</span> <span class="math display">\[y \sim Normal(\mu, \sigma = 0.5)\]</span></p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href=""></a>pred<span class="sc">$</span>REML <span class="ot">&lt;-</span> <span class="fu">predict</span>(sm_reml, <span class="at">newdata =</span> pred)</span>
+<span id="cb11-2"><a href=""></a>pred<span class="sc">$</span>True <span class="ot">&lt;-</span> <span class="fu">my_fun</span>(pred<span class="sc">$</span>x)</span>
+<span id="cb11-3"><a href=""></a></span>
+<span id="cb11-4"><a href=""></a>pred_long <span class="ot">&lt;-</span> pred <span class="sc">%&gt;%</span> </span>
+<span id="cb11-5"><a href=""></a>  <span class="fu">select</span>(x, REML, True) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-6"><a href=""></a>  <span class="fu">pivot_longer</span>(REML<span class="sc">:</span>True, </span>
+<span id="cb11-7"><a href=""></a>               <span class="at">names_to =</span> <span class="st">"Function"</span>,</span>
+<span id="cb11-8"><a href=""></a>                          <span class="at">values_to =</span> <span class="st">"y"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-9"><a href=""></a>  <span class="fu">mutate</span>(<span class="at">Function =</span> <span class="fu">factor</span>(Function, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"REML"</span>, </span>
+<span id="cb11-10"><a href=""></a>                                              <span class="st">"True"</span>)))</span>
+<span id="cb11-11"><a href=""></a></span>
+<span id="cb11-12"><a href=""></a><span class="co"># Plot</span></span>
+<span id="cb11-13"><a href=""></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb11-14"><a href=""></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> dat, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y)) <span class="sc">+</span></span>
+<span id="cb11-15"><a href=""></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> pred_long, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">color =</span> Function),</span>
+<span id="cb11-16"><a href=""></a>            <span class="at">linewidth =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb11-17"><a href=""></a>  <span class="fu">theme_classic</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="07a_lecture_files/figure-revealjs/unnamed-chunk-21-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img data-src="07a_lecture_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center" width="960"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The GAM was a very good approximation for this function (and remember, there are confidence intervals we’re not showing here).</p>
+</section>
+<section id="penalizing-complexity-9" class="slide level2">
+<h2>Penalizing Complexity</h2>
+<p><br></p>
+<p>After estimating our parameters with REML, the fitted function <span class="math inline">\((\hat{f})\)</span> has fewer <strong>effective degrees of freedom</strong> (EDF) than an unpenalized function would have.</p>
+<p><br></p>
+<p>Your choice of <span class="math inline">\(k\)</span> (the number of knots/basis functions) sets the upper limit on complexity, such that <span class="math inline">\(\mathrm{EDF} &lt; k\)</span>.</p>
+</section></section>
+<section>
+<section id="gams-in-practice" class="title-slide slide level1 center">
+<h1>GAMs in Practice</h1>
+
+</section>
+<section id="choosing-knots" class="slide level2">
+<h2>Choosing Knots</h2>
+<p><br></p>
+<p>As long as we choose <span class="math inline">\(k\)</span> to be large enough, GAM theory tells us that we will have a good approximation of <span class="math inline">\(f\)</span>.</p>
+<p><br></p>
+<p>However, increasing <span class="math inline">\(k\)</span> increases computation time. A dataset with <span class="math inline">\(n\)</span> data points takes <span class="math inline">\(\mathcal{O}(nk^2)\)</span> operations to compute. So computation time is roughly proportional to the square of <span class="math inline">\(k\)</span>. Doubling <span class="math inline">\(k\)</span> quadruples fitting time.</p>
+<p><br></p>
+<p>Choosing <span class="math inline">\(k\)</span> is thus an important user choice. The <code>mgcv::gam()</code> default of <code>k = 10</code> is completely arbitrary.</p>
+</section>
+<section id="choosing-knots-1" class="slide level2">
+<h2>Choosing Knots</h2>
+<p><br></p>
+<p>A good approach is to try a reasonably large number of knots and then evaluate your choice.</p>
+<p><br></p>
+<p><code>mgcv</code> offers <code>k.check()</code> to evaluate whether your choice was sufficient.</p>
+<p><br></p>
+<p>See <code>mgcv</code> help files for further discussion of choosing <span class="math inline">\(k\)</span>. See <code>?k.check</code> and <code>?choose.k</code>.</p>
+</section>
+<section id="basis-choices" class="slide level2">
+<h2>Basis Choices</h2>
+<p><br></p>
+<h3 id="cubic-regression-splines-6">Cubic Regression Splines</h3>
+<p><code>s(x, bs = "cr")</code></p>
+<ul>
+<li>Easy to understand. Knots are placed evenly along the data (by quantiles).</li>
+</ul>
+<p><br></p>
+<h3 id="cyclic-cubic-regression-splines">Cyclic Cubic Regression Splines</h3>
+<p><code>s(x, bs = "cc")</code></p>
+<ul>
+<li>Appropriate for circular predictors, such as time of day or day of year. The function will have the same value, first derivative, and second derivative at both ends of the circle (e.g., 00:00 and 24:00 h).</li>
+</ul>
+</section>
+<section id="basis-choices-1" class="slide level2">
+<h2>Basis Choices</h2>
+<p><br></p>
+<h3 id="tprs">TPRS</h3>
+<p><code>s(x, bs = "tp")</code></p>
+<ul>
+<li>Full thin plate splines are an elegant and general solution to the spline problem, but they are very computationally intensive (because <span class="math inline">\(k = n\)</span>).</li>
+<li>They do not require specifying knot locations and are also appropriate for multidimensional smooths.</li>
+<li>However, thin plate regression splines are a rank-reduced version of the full thin plate splines, which truncates the basis “in an optimal manner.” See <code>?smooth.construct.tp.smooth.spec</code> for some details.</li>
+<li>Essentially, they have many of the best features, but are less computationally intensive.</li>
+<li>This is the default basis <code>s(x)</code>.</li>
+</ul>
+</section>
+<section id="basis-choices-2" class="slide level2">
+<h2>Basis Choices</h2>
+<p><br></p>
+<h3 id="random-effects">Random Effects</h3>
+<p><code>s(x, bs = "re")</code></p>
+<p><br></p>
+<ul>
+<li>It turns out that there is an equivalence between the complexity penalty for a penalized spline and Gaussian random effects.</li>
+<li>Software that can fit (G)LMMs can be used to fit GAMs and software that can be used to fit GAMs can be used to fit (G)LMMs.</li>
+<li>See also <a href="https://doi.org/10.7717/peerj.6876" target="blank">Pedersen et al.&nbsp;(2019)</a> for more information on hierarchical GAMs.</li>
+</ul>
+</section></section>
+<section>
+<section id="gam-resources" class="title-slide slide level1 center">
+<h1>GAM Resources</h1>
+
+</section>
+<section id="resources" class="slide level2">
+<h2>Resources</h2>
+<ul>
+<li><a href="https://doi.org/10.1201/9781315370279">Generalized Additive Models</a>, by Simon Wood</li>
+<li><a href="https://noamross.github.io/gams-in-r-course/" target="blank">GAMs in R</a>, by Noam Ross</li>
+<li><a href="https://gavinsimpson.github.io/physalia-gam-course/" target="blank">GAM Physalia-Courses Course</a>, by Gavin Simpson</li>
+<li><a href="https://fromthebottomoftheheap.net/" target="blank">From the bottom of the heap</a>, blog by Gavin Simpson</li>
+<li><a href="https://m-clark.github.io/generalized-additive-models/" target="blank">Generalized Additive Models</a>, ebook by Michael Clark</li>
+<li><a href="https://doi.org/10.7717/peerj.6876" target="blank">Pedersen et al.&nbsp;(2019)</a>, an <em>excellent</em> paper explaining GAMs and hierarchical GAMs.</li>
+</ul>
+</section></section>
+<section>
+<section id="ssfs-with-gams-2" class="title-slide slide level1 center">
+<h1>SSFs with GAMs</h1>
+<center>
+<p><img data-src="img/Klappstein%20et%20al%202024.png" alt="Klappstein et al.&nbsp;(2024)"><br>
+</p>
+<p><a href="https://doi.org/10.1111/2041-210X.14367" target="blank">Klappstein et al.&nbsp;(2024)</a></p>
+</center>
+</section>
+<section class="slide level2">
+
+<center>
+<a href="img/Klappstein_fig1.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Klappstein et al.&nbsp;(2024) Figure 1"><img data-src="img/Klappstein_fig1.jpg" style="width:50.0%" alt="Klappstein et al.&nbsp;(2024) Figure 1"></a><br>
+
+</center>
+</section>
+<section id="non-linear-selection" class="slide level2">
+<h2>Non-linear Selection</h2>
+<p><img data-src="img/Klappstein_fig1a.png" alt="Klappstein et al.&nbsp;(2024) Figure 1, panel 1"><br>
+</p>
+<ul>
+<li>Non-linear habitat selection</li>
+<li>Non-parametric movement kernels</li>
+<li>Useful in RSFs, too</li>
+</ul>
+</section>
+<section id="random-slopes" class="slide level2">
+<h2>Random Slopes</h2>
+<p><img data-src="img/Klappstein_fig1b.png" alt="Klappstein et al.&nbsp;(2024) Figure 1, panel 2"><br>
+</p>
+<ul>
+<li>Easier than the Poisson “trick” using <code>glmmTMB</code> or custom models</li>
+<li>Fitting is slower than <code>glmmTMB</code> for large numbers of individuals</li>
+<li>Limited flexibility in random effects structure</li>
+</ul>
+</section>
+<section id="hierarchical-smooths" class="slide level2">
+<h2>Hierarchical Smooths</h2>
+<p><img data-src="img/Klappstein_fig1c.png" alt="Klappstein et al.&nbsp;(2024) Figure 1, panel 3"><br>
+</p>
+<ul>
+<li>Analogous to a random effect, but for a smooth</li>
+<li>Lots of potential complexity and pitfalls here</li>
+<li>See <a href="https://doi.org/10.7717/peerj.6876" target="blank">Pedersen et al.&nbsp;(2019)</a> for more information on hierarchical GAMs</li>
+</ul>
+</section>
+<section id="spatial-random-effects" class="slide level2">
+<h2>Spatial Random Effects</h2>
+<p><img data-src="img/Klappstein_fig1d.png" alt="Klappstein et al.&nbsp;(2024) Figure 1, panel 4"><br>
+</p>
+<ul>
+<li>Accounts for unexplained spatial variation in selection</li>
+<li><code>mgcv</code> can fit multiple types of spatial models</li>
+<li>Includes simple 2D smoothing of xy-coordinates</li>
+<li>Includes Gaussian process models, aka Kriging</li>
+<li>Sometimes referred to as a spatial random effect</li>
+</ul>
+</section>
+<section id="spatial-random-effects-1" class="slide level2">
+<h2>Spatial Random Effects</h2>
+<center>
+<a href="img/xy_log_rss.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Elk selection Gaussian process"><img data-src="img/xy_log_rss.png" style="width:40.0%" alt="Elk selection Gaussian process"></a><br>
+
+</center>
+<p>Here’s a Gaussian process smooth I fit to real data.</p>
+<p><code>s(x, y, bs = "gp")</code></p>
+<p>See <code>?smooth.construct.gp.smooth.spec</code></p>
+</section>
+<section id="time-varying-selection" class="slide level2">
+<h2>Time-varying Selection</h2>
+<p><img data-src="img/Klappstein_fig1e.png" alt="Klappstein et al.&nbsp;(2024) Figure 1, panel 5"><br>
+</p>
+</section>
+<section id="time-varying-selection-1" class="slide level2">
+<h2>Time-varying Selection</h2>
+<center>
+<a href="img/smooth_ag.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Elk selection for agriculture"><img data-src="img/smooth_ag.png" style="width:50.0%" alt="Elk selection for agriculture"></a><br>
+
+</center>
+<p>Here’s an example with real data. Note that there is time varying selection for agriculture (using a cyclic cubic basis) and an individual random slope.</p>
+<p><code>s(doy, by = agriculture, bs = "cc")</code></p>
+</section></section>
+<section>
+<section id="specifying-the-model-in-r" class="title-slide slide level1 center">
+<h1>Specifying the model in <code>R</code></h1>
+
+</section>
+<section id="specifying-the-model-in-r-1" class="slide level2">
+<h2>Specifying the model in <code>R</code></h2>
+<p><br></p>
+<ul>
+<li>SSFs are typically fit using conditional logistic regression</li>
+<li>Conditional logistic regression can be shown to be likelihood-equivalent to a particular form of a Cox proportional hazards model</li>
+<li><code>mgcv::gam()</code> can fit Cox PH models with <code>family = cox.ph</code></li>
+</ul>
+</section>
+<section id="specifying-the-model-in-r-2" class="slide level2">
+<h2>Specifying the model in <code>R</code></h2>
+<p><br></p>
+<p>Syntax:</p>
+<center>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href=""></a>m <span class="ot">&lt;-</span> <span class="fu">gam</span>(<span class="fu">cbind</span>(times, stratum) <span class="sc">~</span> <span class="fu">s</span>(h1) <span class="sc">+</span> <span class="fu">s</span>(h2) <span class="sc">+</span> sl_ <span class="sc">+</span> <span class="fu">log</span>(sl_) <span class="sc">+</span> <span class="fu">cos</span>(ta_),</span>
+<span id="cb12-2"><a href=""></a>         <span class="at">data =</span> dataset,</span>
+<span id="cb12-3"><a href=""></a>         <span class="at">family =</span> cox.ph,</span>
+<span id="cb12-4"><a href=""></a>         <span class="at">weights =</span> case_)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</center>
+<p><br></p>
+<p>In all models:</p>
+<ul>
+<li><code>times</code> is a vector of all <code>1</code>s</li>
+<li><code>stratum</code> is a <code>factor</code> variable uniquely identifying used steps and their matched available steps</li>
+<li><code>case_</code> is a vector of <code>0</code>s and <code>1</code>s identifying the used (<code>1</code>) and available (<code>0</code>) steps</li>
+</ul>
+</section>
+<section id="specifying-the-model-in-r-3" class="slide level2">
+<h2>Specifying the model in <code>R</code></h2>
+<p><br></p>
+<p>Syntax:</p>
+<center>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href=""></a>m <span class="ot">&lt;-</span> <span class="fu">gam</span>(<span class="fu">cbind</span>(times, stratum) <span class="sc">~</span> <span class="fu">s</span>(h1) <span class="sc">+</span> <span class="fu">s</span>(h2) <span class="sc">+</span> sl_ <span class="sc">+</span> <span class="fu">log</span>(sl_) <span class="sc">+</span> <span class="fu">cos</span>(ta_),</span>
+<span id="cb13-2"><a href=""></a>         <span class="at">data =</span> dataset,</span>
+<span id="cb13-3"><a href=""></a>         <span class="at">family =</span> cox.ph,</span>
+<span id="cb13-4"><a href=""></a>         <span class="at">weights =</span> case_)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</center>
+<p><br></p>
+<p>For your specific model, you might want to change how you treat these:</p>
+<ul>
+<li><code>s(h1)</code> and <code>s(h2)</code> specify smooth selection for habitat variables</li>
+<li><code>sl_</code>, <code>log(sl_)</code>, and <code>cos(ta_)</code> are parametric terms for updating step-length and turn-angle distributions</li>
+</ul>
+</section></section>
+<section id="questions" class="title-slide slide level1 center">
+<h1>Questions?</h1>
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="07a_lecture_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="07a_lecture_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="07a_lecture_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="07a_lecture_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="07a_lecture_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="07a_lecture_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="07a_lecture_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="07a_lecture_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="07a_lecture_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="07a_lecture_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+
+    <script>
+
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+
+      // slide changes (different for each slide format).
+
+      (function () {
+
+        // dispatch for htmlwidgets
+
+        function fireSlideEnter() {
+
+          const event = window.document.createEvent("Event");
+
+          event.initEvent("slideenter", true, true);
+
+          window.document.dispatchEvent(event);
+
+        }
+
+    
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+
+          fireSlideEnter();
+
+    
+
+          // dispatch for shiny
+
+          if (window.jQuery) {
+
+            if (previousSlide) {
+
+              window.jQuery(previousSlide).trigger("hidden");
+
+            }
+
+            if (currentSlide) {
+
+              window.jQuery(currentSlide).trigger("shown");
+
+            }
+
+          }
+
+        }
+
+    
+
+        // hookup for slidy
+
+        if (window.w3c_slidy) {
+
+          window.w3c_slidy.add_observer(function (slide_num) {
+
+            // slide_num starts at position 1
+
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+
+          });
+
+        }
+
+    
+
+      })();
+
+    </script>
+
+    
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+                // target, if specified
+                link.setAttribute("target", "_blank");
+                if (link.getAttribute("rel") === null) {
+                  link.setAttribute("rel", "noopener");
+                }
+                // default icon
+                link.classList.add("external");
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+    (function() {
+      let previousOnload = window.onload;
+      window.onload = () => {
+        if (previousOnload) {
+          previousOnload();
+        }
+        lightboxQuarto.on('slide_before_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          const href = trigger.getAttribute('href');
+          if (href !== null) {
+            const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+            if (imgEl !== null) {
+              const srcAttr = imgEl.getAttribute("src");
+              if (srcAttr && srcAttr.startsWith("data:")) {
+                slideConfig.href = srcAttr;
+              }
+            }
+          } 
+        });
+      
+        lightboxQuarto.on('slide_after_load', (data) => {
+          const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(slideNode);
+          }
+        });
+      
+      };
+      
+    })();
+              </script>
+    
+
+</body></html>
