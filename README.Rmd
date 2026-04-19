@@ -10,7 +10,7 @@ output: github_document
 ## Day 1
 1. Introduction and recap (J)
 2. HSF/RSFs (B)
-3. SSFs (J)
+3. SSFs 1 (J)
 
 
 ## Day 2
@@ -28,3 +28,5 @@ output: github_document
 11. Simulating from fitted SSFs (J)
 12. Q&A (both)
 
+
+# Recommended reading

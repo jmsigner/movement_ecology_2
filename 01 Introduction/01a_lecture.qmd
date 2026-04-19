@@ -1,0 +1,175 @@
+---
+title: "Introduction"
+subtitle: "Analysis of Animal Movement Data with R 2 (together with Brian Smith)"
+format: 
+  clean-revealjs:
+    progress: true
+    code-line-numbers: false
+author:
+  - name: Johannes Signer
+    orcid: 0000-0002-1771-7775
+    email: jmsigner@gmail.com
+    affiliations: University of Göttingen, Germany & Freelancer
+date: last-modified
+execute:
+  echo: true
+  warning: false
+  message: false
+filters: 
+  - timer
+revealjs-plugins:
+  - codefocus
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+
+knitr::opts_knit$set(
+  root.dir = here::here("01 Introduction/")
+)
+
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.height = 4.5,
+  fig.width = 4.5
+)
+```
+
+
+# Welcome
+
+## To get started
+
+- Welcome to this online course on animal movement. 
+- We are Brian and Johannes.
+- Who are you? *Pair up and introduce your partner*
+
+------
+
+### Ask your partner: 
+
+::::: {.coluns}
+
+:::: {.column width = "60%"}
+
+- What is your background?
+- Where do you come from?
+- Where do you study/work?
+- What is your study organism?
+- Why do you attend this course?
+  
+::::
+
+:::: {.column width = "40%"}
+  
+:::{.timer #timer-1 seconds=180 starton=interaction}
+:::
+
+::::
+  
+:::::
+  
+## Outline of the course
+
+### Day 1
+1. Introduction and recap (J)
+2. HSF/RSFs (B)
+3. SSFs (J)
+
+### Day 2
+4. LogRSS (J)
+5. SSF 2 (B)
+6. Mixed RSF/SSF and multiple models (J)
+
+### Day 3
+7. GAM-SSF (B)
+8. Validation (B)
+9 HMM (J)
+
+------
+
+### Day 4
+10. State-switching SSFs (J)
+11. Simulating from fitted SSFs (J)
+12. Q&A (both)
+
+
+**Throughout the whole course and also for the exercises, if possible, please use your own data. **
+
+--- 
+
+## Some logistics
+
+- Four days (Monday to Thursday) from 14:00 to 18:00 Berlin time.
+- We split these 4-hour block into 3 - 4 chunks, each roughly structured like this: 
+  - Lecture ~ 30 min
+  - R walkthrough ~ 20 min
+  - Introduction of exercises ~ 5 min
+- A 20 min break approx. from 15:50 to 16:10.
+
+------
+    
+- Lectures will be held via zoom.
+- During the whole workshop we have a slack channel where you ask questions (we will monitor the channel during the course, feel free to ask questions there also outside the course hours).
+
+- All course material is available here: <https://github.com/jmsigner/movement_ecology_2>
+
+::: {.notes}
+Say that you can download the whole repo in one go or clone it. 
+:::
+
+## Packages that we will use
+
+- We will mainly use the `amt` package, but also occasionally other packages for movement analysis. 
+
+- See also `required_packages.R` for a list of all packages that we need and to get the latest version of all packages. 
+
+# Some conventions in R
+
+- `%>%` or `|>`: Pipes the output of one function to a next function. We will discuss this further later on. 
+- `::` to access a namespace form a package. 
+- `data.frame` or `tibble`?
+
+::: {.fragment}
+
+- We often use `here::here("path to a file")`, when reading in a file. 
+- The first `here` calls the function `here()` from the package `here`. 
+- The function `here()` dynamically creates the absolute path to the project root. 
+
+```{r}
+here::here()
+```
+
+:::: {.notes}
+This means, even though our computers differ, relative to the project root, we all have the same directory structure. 
+::::
+
+:::
+
+# Movement data (in R)
+
+## What we assume you are familiar with
+
+- importing (movement) data to R ([see here](https://github.com/jmsigner/movement_ecology_1/tree/main/04%20Random%20Walks))
+- familiarity with some packages (e.g., `amt`)
+- familiarity with random walks and correlated random walks ([see here](https://github.com/jmsigner/movement_ecology_1/tree/main/04%20Random%20Walks))
+- with home ranges ([see here](https://github.com/jmsigner/movement_ecology_1/tree/main/06%20Home%20Ranges))
+- how to work with multiple instances ([see here](https://github.com/jmsigner/movement_ecology_1/tree/main/07%20Multiple%20Instances))
+
+## Equal sampling rate
+
+- Many methods that we deal with assume equal sample rates (i.e., the time distance between consecutive relocation is the same). 
+- In `amt` the function `track_resample()` allows to do this. 
+
+
+## Next: Code walkthrough
+
+Briefly recap/illustrate: 
+
+1. How to create a track
+2. How to resample a track
+3. Calculating an minimum conve polygon (MCP) home range
+4. How to deal with multiple animals/instances

@@ -12,7 +12,7 @@ models.
 
 1.  Introduction and recap (J)
 2.  HSF/RSFs (B)
-3.  SSFs (J)
+3.  SSFs 1 (J)
 
 ## Day 2
 
@@ -30,3 +30,5 @@ models.
 10. State-switching SSFs (J)
 11. Simulating from fitted SSFs (J)
 12. Q&A (both)
+
+# Recommended reading

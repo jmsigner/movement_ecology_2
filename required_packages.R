@@ -23,7 +23,9 @@ required.packages <- c(
   "terra",
   "suncalc",
   "remotes", 
-  "mgcv"
+  "mgcv", 
+  "moveHMM", 
+  "hmmTMB"
 )
 
 # Suggested packages
