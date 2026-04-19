@@ -1,7 +1,7 @@
 #######################################################X
 #----Analysis of Animal Movement Data in R Workshop----X
-#-------------------Module 05 -- HSFs------------------X
-#----------------Last updated 2024-01-23---------------X
+#-------------------Module 02 -- RSFs------------------X
+#----------------Last updated 2026-04-19---------------X
 #-------------------Code Walkthrough-------------------X
 #######################################################X
 
@@ -33,7 +33,7 @@ library(amt)
 # If you want to see how I did that, check out the script "habitat.R". We can 
 # load those here as a SpatRast.
 
-hab <- rast("05 HSF/geo/habitat.tif")
+hab <- rast("02 HSF/geo/habitat.tif")
 names(hab) <- c("forage", "temp", "predator", "cover")
 
 # Cover is a factor, let's code it that way
@@ -254,7 +254,7 @@ plot(hab$forage)
 points(gps$x, gps$y, pch = 16, cex = 0.5)
 
 # Save our simulated data for a later module.
-write.csv(gps, "05 HSF/module05_HSF_data.csv", row.names = FALSE)
+write.csv(gps, "02 HSF/module02_HSF_data.csv", row.names = FALSE)
 
 # Fitting an HSF with 'amt' ----
 # Now that we've simulated these data, let's fit an HSF.
