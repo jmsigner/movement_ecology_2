@@ -163,7 +163,7 @@ ggplot(trk, aes(x, y, group = burst_, col = factor(burst_))) +
 
 ------
 
-- Interpretation of parameters can be done exactly the same way as for HSF (previous module). 
+- Interpretation of parameters can be done exactly the same way as for HSF (previous module and module 5). 
 - The relative selection strength (RSS) is how many times more probable it is, to select one step over an other step, when the two steps differ in one covariate at the end of the step.
 
 
@@ -313,7 +313,7 @@ We will cover this in much more detail in the R walkthrough. The workflow is usu
 
 - For the von Mises distribution the cosine of the turn angle is linked to the concentration parameter. 
 
-Once the model is fitted to the data, the tentative parameter estimates can be adjusted (more on this in module 5). 
+Once the model is fitted to the data, the tentative parameter estimates can be adjusted (more on this in module 4). 
 
 
 ## How many random steps do we need?
