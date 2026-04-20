@@ -21,7 +21,7 @@ options(htmltools.dir.version = FALSE)
 library(RefManageR)
 BibOptions(check.entries = FALSE, bib.style = "authoryear", style = "markdown",
            dashed = TRUE)
-bib <- ReadBib(here::here("05 SSF 2", "05_refs.bib"))
+bib <- ReadBib(here::here("04 SSF 2", "04_refs.bib"))
 ```
 
 class: center, middle, inverse
