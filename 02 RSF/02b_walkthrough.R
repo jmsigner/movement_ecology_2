@@ -33,7 +33,7 @@ library(amt)
 # If you want to see how I did that, check out the script "habitat.R". We can 
 # load those here as a SpatRast.
 
-hab <- rast("02 HSF/geo/habitat.tif")
+hab <- rast("02 RSF/geo/habitat.tif")
 names(hab) <- c("forage", "temp", "predator", "cover")
 
 # Cover is a factor, let's code it that way
@@ -254,7 +254,7 @@ plot(hab$forage)
 points(gps$x, gps$y, pch = 16, cex = 0.5)
 
 # Save our simulated data for a later module.
-write.csv(gps, "02 HSF/module02_HSF_data.csv", row.names = FALSE)
+write.csv(gps, "02 RSF/module02_HSF_data.csv", row.names = FALSE)
 
 # Fitting an HSF with 'amt' ----
 # Now that we've simulated these data, let's fit an HSF.
