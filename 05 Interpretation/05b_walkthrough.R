@@ -85,6 +85,8 @@ forest <- subst(forest, 0, NA)
 dforest <- log1p(distance(forest))
 names(dforest) <- "dforest"
 
+# `log_rss()` is designed to be able to consider several locations as `x1`,
+# relative to a **single** location in `x2`. 
 
 m1 <- deer %>% steps_by_burst() %>% 
   random_steps() %>% 
@@ -99,6 +101,7 @@ s1 <- data.frame(
 # data.frame for s2
 s2 <- data.frame(
   dforest = 1)
+
 
 lr1 <- log_rss(m1, x1 = s1, x2 = s2)
 
@@ -122,6 +125,7 @@ lr1_ci_se <- log_rss(m1, s1, s2, ci = "se", ci_level = 0.95)
 head(lr1_ci_se$df)
 
 ggplot(lr1_ci_se$df, aes(dforest_x1, log_rss)) + 
+>>>>>>> ec10ffd190422f12762dd539c7e7406ff0aa33af
   geom_hline(yintercept = 0, col = "red", lty = "dashed") +
   geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.2) +
   geom_line() 
