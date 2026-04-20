@@ -30,11 +30,13 @@ library(sf)
 # Load data from the amt package
 
 data(amt_fisher)
+head(amt_fisher)
 
 # Note, that a track is characterized by `x_`, `y_` and `t_`. We could add a crs
 # using the crs argument with the EPSG code.
 
 tr <- make_track(amt_fisher, x_, y_, t_, id = name, crs = 5070)
+class(tr)
 
 # ... Changing the CRS ----
 
@@ -71,6 +73,7 @@ plot(hr1)
 
 # Dealing with many animals -----------
 tr |> nest(data = -id)
+tr |> nest(gps = -id)
 
 # Adding home ranges
 tr |> nest(data = -id) |> 
