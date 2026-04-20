@@ -30,9 +30,6 @@ set.seed(1323)
 # 1), we take 0.5 as a threshold which should lead on average to approx. 50 %
 # forest.
 
-# Note the package NLMR is not maintained anymore, below is the code how to 
-# simulate covariates, but you just skip it and load to the covariates. 
-
 r <- rast(xmin = -100, xmax = 100, ymin = -100, ymax = 100)
 values(r) <- rnorm(ncell(r))
 
