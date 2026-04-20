@@ -23,8 +23,12 @@ models.
 ## Day 3
 
 7.  GAM-SSF (B)
+<<<<<<< HEAD
 8.  Validation (B)
 9.  HMM (J)
+=======
+8.  Validation (B) 9 HMM (J)
+>>>>>>> 06dd04d10511917b2780aeeab0c544132ee36606
 
 ## Day 4
 
