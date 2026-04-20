@@ -13,7 +13,7 @@
 
   <meta name="author" content="Johannes Signer">
   <meta name="dcterms.date" content="2026-04-19">
-  <title>Introduction</title>
+  <title>Introduction to SSFs</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -132,7 +132,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Introduction</h1>
+  <h1 class="title">Introduction to SSFs</h1>
   <p class="subtitle">Analysis of Animal Movement Data with R 2 (together with Brian Smith)</p>
 
 <div class="quarto-title-authors">
@@ -151,41 +151,50 @@ Johannes Signer <a href="https://orcid.org/0000-0002-1771-7775" class="quarto-ti
 
   <p class="date">April 19, 2026</p>
 </section>
-<section id="availability-matters" class="title-slide slide level1 center">
-<h1>Availability matters</h1>
+<section id="availability-matters" class="slide level2">
+<h2>Availability matters</h2>
 <ul>
 <li>Habitat-selection function assume that each point in the availability domain (e.g., the home range) is available to the animal at any given point in time.</li>
 <li>This assumption might be met with relatively coarse data (large sampling rates), but the assumption becomes unrealistic for data sets with a higher temporal resolution.</li>
 </ul>
 </section>
-
-<section>
-<section id="good-overviews-are" class="title-slide slide level1 center">
-<h1>Good overviews are</h1>
-
-<img data-src="../img/northrup.png" style="width:70.0%" class="r-stretch"></section>
-<section class="slide level2">
-
-
-<img data-src="../img/thurfjell.png" style="width:70.0%" class="r-stretch"></section>
+<section id="good-overviews-are" class="slide level2">
+<h2>Good overviews are</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="../img/northrup.png" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="../img/thurfjell.png" style="width:50.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
 <section class="slide level2">
 
 <p>For a more statistical review on Step-Selection Functions (SSF) also see</p>
 
 <img data-src="../img/michelot2024.png" style="width:70.0%" class="r-stretch"><p>They point out very nicely how to conceptually separate the SSF (statistical model) from inference (often conditional logistic regression).</p>
-</section></section>
-<section id="the-basic-idea-behind-an-ssf" class="title-slide slide level1 center">
-<h1>The basic idea behind an SSF</h1>
+</section>
+<section id="the-basic-idea-behind-an-ssf" class="slide level2">
+<h2>The basic idea behind an SSF</h2>
 <ul>
 <li>Habitat selection is constrained by the movement capacity (i.e., how far can an animal displace within a single time step) and</li>
 <li>the current position of the animal.</li>
 </ul>
 
 <img data-src="../img/michelot2024_fig1.png" style="width:70.0%" class="r-stretch quarto-figure-center"><p class="caption">From Michelot et al.&nbsp;2024</p></section>
-
-<section>
-<section id="step-selection-function-ssf" class="title-slide slide level1 center">
-<h1>Step-selection function (SSF)</h1>
+<section id="step-selection-function-ssf" class="slide level2">
+<h2>Step-selection function (SSF)</h2>
 <p>Fortin et al.&nbsp;(2005) introduced the step-selection function as:</p>
 <p><span class="math display">\[
 u(s,t+\Delta t) | u(s', t) = \frac{w(X(s); \beta(\Delta t))}{\int_{\tilde{s}\in G}w(X(\tilde{s}, s'); \beta(\Delta t))d\tilde{s}}
@@ -260,7 +269,7 @@ u(s,t+\Delta t) | u(s', t) = \frac{w(X(s); \beta(\Delta t))}{\int_{\tilde{s}\in 
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="../img/avgar.png" style="width:40.0%"></p>
+<p><img data-src="../img/avgar.png" style="width:50.0%"></p>
 </figure>
 </div>
 </div>
@@ -269,7 +278,7 @@ u(s,t+\Delta t) | u(s', t) = \frac{w(X(s); \beta(\Delta t))}{\int_{\tilde{s}\in 
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="../img/fieberg.png" style="width:40.0%"></p>
+<p><img data-src="../img/fieberg.png" style="width:50.0%"></p>
 </figure>
 </div>
 </div>
@@ -286,10 +295,9 @@ u(s,t+\Delta t) | u(s', t) = \frac{w(X(s); \beta(\Delta t))\phi(s, s'; \gamma(\D
 <ul>
 <li><span class="math inline">\(\phi(s,s'; \gamma(\Delta t))\)</span> is a selection-independent movement kernel that describes how the animal would move in homogeneous habitat.</li>
 </ul>
-</section></section>
-<section>
-<section id="characterizing-animal-movement-the-movement-kernel" class="title-slide slide level1 center">
-<h1>Characterizing animal movement (the movement kernel)</h1>
+</section>
+<section id="characterizing-animal-movement-the-movement-kernel" class="slide level2">
+<h2>Characterizing animal movement (the movement kernel)</h2>
 <ul>
 <li>In order to use statistical models to describe the movement process.</li>
 <li>This is most easily done using statistical distributions for step lengths and turn angles.</li>
@@ -327,10 +335,9 @@ u(s,t+\Delta t) | u(s', t) = \frac{w(X(s); \beta(\Delta t))\phi(s, s'; \gamma(\D
 <li>Parameters for step-length distribution and turn-angle distribution can change, resembling different behavioral states of the animal (e.g., foraging vs.&nbsp;resting).</li>
 </ul>
 
-<img data-src="../img/moll3_part.jpg" width="1064" class="r-stretch quarto-figure-center"><p class="caption">Figure from Moll et al.&nbsp;2021</p></section></section>
-<section>
-<section id="take-home-messages" class="title-slide slide level1 center">
-<h1>Take-home messages</h1>
+<img data-src="../img/moll3_part.jpg" width="1064" class="r-stretch quarto-figure-center"><p class="caption">Figure from Moll et al.&nbsp;2021</p></section>
+<section id="take-home-messages" class="slide level2">
+<h2>Take-home messages</h2>
 <ol type="1">
 <li>We can use statistical distributions to characterize the movement of animals.</li>
 <li>Statistical distributions are described using one or more parameters.</li>
@@ -397,8 +404,14 @@ u(s,t+\Delta t) | u(s', t) = \frac{w(X(s); \beta(\Delta t))\phi(s, s'; \gamma(\D
 <li>We sample step length and turn angles from fitted statistical distributions.</li>
 <li>We then include functions of steps in the model.</li>
 </ul>
+</section>
+<section id="next-code-walkthrough" class="slide level2">
+<h2>Next: Code walkthrough</h2>
+<ol type="1">
+<li>Simulate a simple SSF and fit an iSSF again.</li>
+</ol>
 
-</section></section>
+</section>
 
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">

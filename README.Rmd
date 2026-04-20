@@ -14,14 +14,14 @@ output: github_document
 
 
 ## Day 2
-4. LogRSS (J)
-5. SSF 2 (B)
+4. SSF 2 (B)
+5. Interpretation (J)
 6. Mixed RSF/SSF and multiple models (J)
 
 ## Day 3
 7. GAM-SSF (B)
 8. Validation (B)
-9 HMM (J)
+9. HMM (J)
 
 ## Day 4
 10. State-switching SSFs (J)

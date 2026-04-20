@@ -1,0 +1,376 @@
+---
+title: "Interpretation"
+subtitle: "Analysis of Animal Movement Data with R 2 (together with Brian Smith)"
+format: 
+  clean-revealjs:
+    progress: true
+    code-line-numbers: false
+author:
+  - name: Johannes Signer
+    orcid: 0000-0002-1771-7775
+    email: jmsigner@gmail.com
+    affiliations: University of Göttingen, Germany & Freelancer
+date: last-modified
+execute:
+  echo: true
+  warning: false
+  message: false
+filters: 
+  - timer
+revealjs-plugins:
+  - codefocus
+---
+
+```{r setup}
+#| include: false
+library(tidyverse)
+library(here)
+library(amt)
+library(terra)
+
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.height = 4.5,
+  fig.width = 4.5
+)
+```
+
+## Why interpretation can be challenging
+
+![](images/clipboard-3270412941.png)
+
+## Use-available vs presence abasence
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+### Use available
+
+We are comparing points that we know the animal used, with points that were available to the animal (maybe they were used maybe not, we do not know). 
+
+:::
+
+::: {.column width="50%"}
+
+### Presence absence
+
+We are comparing points that we know the animal used, with points that we know the animal **did not** use.  
+
+:::
+
+::::
+
+----------
+
+::: {.callout-warning}
+For presence-absence designs, we can easily calculate a probability of use, but not for use-available designs. 
+:::
+
+:::: {.fragment}
+
+![](images/clipboard-3270412941.png)
+
+::::
+
+
+## What can we do instead?
+
+- Calculate relative probability of use (RSS; Relative Selection Strength)
+- Look at coefficients, or 
+- Use generalized linear hypothesis tests for meaningful comparisons
+
+
+## Relative Selection Strength (RSS)
+
+## Relative Selection Strength (RSS)
+
+- In step selection functions (SSF), we model how animals choose steps based on environmental covariates
+
+- The model is typically:
+  
+$$
+w(x) = \exp(\beta_1 x_1 + \beta_2 x_2 + \dots)
+$$
+
+----------
+
+**RSS compares two locations**:
+  
+- Q: How much more likely is location $x_1$ used than location $x_2$?
+
+
+$$
+RSS(x_1, x_2) = \frac{w(x_1)}{w(x_2)}
+$$
+
+- Interpretation:
+  - RSS > 1: location 1 preferred
+  - RSS < 1: location 2 preferred
+  - RSS = 1: no difference
+
+-----
+
+
+We fitted a simple model to one deer: `fit_ssf(case_ ~ forest + strata(step_id_))`
+
+```{r, echo = FALSE}
+set.seed(123)
+library(amt)
+library(broom)
+data(deer)
+forest <- get_sh_forest()
+
+m1 <- deer %>% steps_by_burst() %>% random_steps() %>% 
+  extract_covariates(forest) %>% 
+  fit_ssf(case_ ~ forest + strata(step_id_), model = TRUE)
+tidy(m1$model)
+```
+
+**Think-pair-share:** Try to give an interpretation on the estimated coefficient for forest.
+
+------
+
+
+
+- `forest` indicates if the end of a step is located inside a forest or not.
+- $\exp(\beta_1) = \exp(0.56) = 1.75$. This indicates that it is 1.75 times more probably for a step to end in a forest patch than in a non-forest patch. 
+
+
+-------
+
+As a simulation experiment: 
+
+```{r}
+r <- sample(
+  c("x1", "x2"),   # The two locations
+  1e5, 
+  prob = c(
+    exp(0.56), # x1 is in the forest; exp(1 * 0.56)
+    exp(0) # x2 is not in forest; exp(0 * 0.56)
+  ),  
+ replace = TRUE)
+```
+
+Tabulate reults
+
+```{r}
+(ct <- table(r))
+```
+
+How much more likely is $x_1$ compared to $x_2$:
+
+```{r}
+ct[1] / ct[2]
+```
+
+-----
+
+The same with the `log_rss()`-functino in `amt`: 
+
+```{r}
+x1 <- data.frame(forest = 1)
+x2 <- data.frame(forest = 0)
+log_rss(m1, x1, x2)$df |> 
+  mutate(rss = exp(log_rss))
+```
+
+:::: {.fragment}
+
+And we can add confidence intervalls
+
+```{r}
+log_rss(m1, x1, x2, ci = "se")$df |> 
+  mutate(rss = exp(log_rss), lwr = exp(lwr), upr = exp(upr))
+```
+
+::::
+
+
+
+-----
+
+### Slightly more complicated models
+
+If we have a continuous variable, lets use distance to forest instead forest/non forest as a binary covariate. 
+
+```{r, echo = FALSE}
+set.seed(123)
+
+data("deer")
+forest <- get_sh_forest()
+forest <- subst(forest, 0, NA)
+dforest <- scale(distance(forest))
+names(dforest) <- "dforest"
+
+
+m1 <- deer %>% steps_by_burst() %>% 
+  random_steps() %>% 
+  extract_covariates(dforest) %>% 
+  fit_ssf(case_ ~ dforest + strata(step_id_), model = TRUE)
+tidy(m1$model)
+
+
+
+```
+
+-----
+
+Now it becomes more interesting to look at range of $x_1$ values and compare them to one **fixed** value of $x_2$. 
+
+```{r}
+x1 <- data.frame(
+  dforest = 1 # dforest is scaled (-1 SD from the mean)
+)
+x2 <- data.frame(
+  dforest = 0 # the mean distance
+)
+
+log_rss(m1, x1, x2)$df
+```
+
+------------
+
+For visualization it is often interesting to compare $x_2$ to a range of values.
+
+```{r}
+x1 <- data.frame(
+  dforest = seq(-3, 3, 0.1) 
+)
+x2 <- data.frame(
+  dforest = 0 # the mean distance
+)
+
+head(log_rss(m1, x1, x2)$df)
+```
+
+-------------
+
+Or plot the result
+
+```{r, echo = FALSE}
+log_rss(m1, x1, x2)$df |> 
+  ggplot(aes(dforest_x1, log_rss)) + 
+  geom_line() +
+  theme_minimal() +
+  labs(x = "Distance to forest (scaled)", y = "log(RSS)") +
+  geom_hline(yintercept = 0, lty = 2) + 
+  geom_vline(xintercept = 0, col = "red")
+
+```
+
+
+---------
+
+What happens if we change $x_2$?
+
+```{r, echo = FALSE}
+res <- lapply(-2:2, function(x) {
+  x1 <- data.frame(
+  dforest = seq(-3, 3, 0.1) 
+  )
+  x2 <- data.frame(
+    dforest = x # the mean distance
+  )
+  log_rss(m1, x1, x2)$df |> mutate(x2 = x)
+})
+
+bind_rows(res) |> 
+  ggplot(aes(dforest_x1, log_rss, col = factor(x2))) + 
+  geom_line() +
+  theme_minimal() +
+  labs(x = "Distance to forest (scaled)", y = "log(RSS)", 
+       col = "Reference value (x_2)") +
+  geom_hline(yintercept = 0, lty = 2) 
+
+```
+
+
+---------------
+
+If we assume that habitat selection differs between day and night for this one deer, we will have to add  an interactions between the continouos distance to forest and time of day (categorical).  
+
+```{r, echo = FALSE}
+m1 <- deer %>% steps_by_burst() %>% 
+  random_steps() %>% 
+  extract_covariates(dforest) %>% 
+  time_of_day() |> mutate(day = as.numeric(tod_end_ == "day")) |> 
+  fit_ssf(case_ ~ dforest + dforest:day + strata(step_id_), model = TRUE)
+tidy(m1$model)
+
+```
+
+-----------
+
+The basic principle remains the same (we define $x_1$ and $x_2$): 
+
+
+```{r}
+x1 <- data.frame( # different distances during the day
+  dforest = seq(-3, 3, 0.1), 
+  day = 1 
+)
+x2 <- data.frame(
+  dforest = 0, 
+  day = 1
+)
+
+head(log_rss(m1, x1, x2)$df)
+```
+
+-------
+
+```{r}
+x1 <- data.frame( # different distances during the night
+  dforest = seq(-3, 3, 0.1), 
+  day = 0 
+)
+x2 <- data.frame(
+  dforest = 0, 
+  day = 0
+)
+
+head(log_rss(m1, x1, x2)$df)
+```
+
+-------------
+
+```{r}
+x1 <- expand.grid( # different distances during the night
+  dforest = seq(-3, 3, 0.1), 
+  day = 0:1
+)
+x2 <- data.frame(
+  dforest = 0, 
+  day = 0
+)
+
+head(log_rss(m1, x1, x2)$df)
+```
+
+-------------
+
+```{r, echo = FALSE}
+x1 <- expand.grid( # different distances during the night
+  dforest = seq(-3, 3, 0.1), 
+  day = 0:1
+)
+x2 <- data.frame(
+  dforest = 0, 
+  day = 0
+)
+
+log_rss(m1, x1, x2)$df |> 
+  mutate(day = ifelse(day_x1 == 1, "day", "night")) |> 
+  ggplot(aes(dforest_x1, log_rss, col = factor(day))) + 
+  geom_line() +
+  theme_minimal() +
+  labs(x = "Distance to forest (scaled)", y = "log(RSS)", 
+       col = "Time of day") +
+  geom_hline(yintercept = 0, lty = 2) 
+  
+```
+
+What is the reference value?

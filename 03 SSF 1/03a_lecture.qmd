@@ -1,5 +1,5 @@
 ---
-title: "Introduction"
+title: "Introduction to SSFs"
 subtitle: "Analysis of Animal Movement Data with R 2 (together with Brian Smith)"
 format: 
   clean-revealjs:
@@ -37,12 +37,12 @@ knitr::opts_chunk$set(
 
 
 
-# Availability matters
+## Availability matters
 
 - Habitat-selection function assume that each point in the availability domain (e.g., the home range) is available to the animal at any given point in time. 
 - This assumption might be met with relatively coarse data (large sampling rates), but the assumption becomes unrealistic for data sets with a higher temporal resolution. 
 
-# Good overviews are
+## Good overviews are
 
 ```{r, echo = FALSE, out.width="50%"}
 knitr::include_graphics(here("img/northrup.png"))
