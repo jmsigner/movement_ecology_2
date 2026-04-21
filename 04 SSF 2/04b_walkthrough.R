@@ -1,7 +1,7 @@
 #######################################################X
 #----Analysis of Animal Movement Data in R Workshop----X
-#----------------Module 05 -- iSSF pt 2----------------X
-#----------------Last updated 2024-01-25---------------X
+#----------------Module 04 -- iSSF pt 2----------------X
+#----------------Last updated 2026-04-20---------------X
 #-------------------Code Walkthrough-------------------X
 #######################################################X
 
@@ -26,7 +26,7 @@ library(circular)
 
 # ... habitat variables ----
 # We'll use the same habitat layers we generated for module 5.
-hab <- rast("05 HSF/geo/habitat.tif")
+hab <- rast("02 RSF/geo/habitat.tif")
 names(hab) <- c("forage", "temp", "predator", "cover")
 
 # Cover is a factor, let's code it that way
@@ -259,7 +259,7 @@ dat$abs_angle[1] <- 0 # directly north
 # raster cell.
 coords <- xyFromCell(hab, 1:ncell(hab))
 
-# We'll also want our jitter function from module 05.
+# We'll also want our jitter function from module 02.
 
 # Function to jitter data
 jitter <- function(x, y, min = -25, max = 25) {
