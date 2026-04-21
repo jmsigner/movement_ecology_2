@@ -21,7 +21,7 @@ options(htmltools.dir.version = FALSE)
 library(RefManageR)
 BibOptions(check.entries = FALSE, bib.style = "authoryear", style = "markdown",
            dashed = TRUE)
-bib <- ReadBib(here::here("08 Validation", "08_refs.bib"))
+bib <- ReadBib(here::here("10 Validation", "10_refs.bib"))
 ```
 
 

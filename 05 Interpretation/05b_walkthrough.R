@@ -216,3 +216,8 @@ tidy(lht, conf.int = TRUE) |>
   geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +
   geom_hline(yintercept = 0, lty = 2) +
   theme_minimal() 
+
+# For two categorical covariates
+glht(
+  m2$model, c("forest = 0", "forest + forest:night = 0")
+) |> summary()
