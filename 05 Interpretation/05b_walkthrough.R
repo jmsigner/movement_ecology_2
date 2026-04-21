@@ -20,6 +20,7 @@ set.seed(123)
 
 data(deer)
 forest <- get_sh_forest()
+plot(forest)
 
 m1 <- deer %>% steps_by_burst() %>% random_steps() %>% 
   extract_covariates(forest) %>% 
@@ -78,11 +79,13 @@ exp(coef(m1)["forest"]) # See Module 5 for this
 # `log_rss()` is designed to be able to consider several locations as `x1`,
 # relative to a **single** location in `x2`. 
 
-# Lets next refit the model and add a continuous covaraite: distance to froest.
+# Lets next refit the model and add a continuous covariate: distance to forest.
 
 forest <- get_sh_forest()
 forest <- subst(forest, 0, NA)
+plot(forest)
 dforest <- log1p(distance(forest))
+plot(dforest)
 names(dforest) <- "dforest"
 
 # `log_rss()` is designed to be able to consider several locations as `x1`,
@@ -125,7 +128,6 @@ lr1_ci_se <- log_rss(m1, s1, s2, ci = "se", ci_level = 0.95)
 head(lr1_ci_se$df)
 
 ggplot(lr1_ci_se$df, aes(dforest_x1, log_rss)) + 
->>>>>>> ec10ffd190422f12762dd539c7e7406ff0aa33af
   geom_hline(yintercept = 0, col = "red", lty = "dashed") +
   geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.2) +
   geom_line() 
@@ -139,7 +141,7 @@ lr1_ci_se$df |> mutate(across(log_rss:upr, exp)) |>
   geom_line() 
 
 # If we assume that habitat selection differs between day and night for this one 
-# deer, we will have to add  an interactions between the continouos distance to 
+# deer, we will have to add  an interactions between the continuous distance to 
 # forest and time of day (categorical).  
 
 m1 <- deer %>% steps_by_burst() %>% 
@@ -149,6 +151,9 @@ m1 <- deer %>% steps_by_burst() %>%
   fit_ssf(case_ ~ dforest + dforest:night + strata(step_id_), model = TRUE)
 summary(m1$model)
 
+expand.grid(dforest = c(0, 4, 8), 
+            night = 0:1
+            )
 
 s1 <- expand.grid( # different distances during the night
   dforest = seq(0, 8, 0.1), 
@@ -159,19 +164,41 @@ s2 <- data.frame(
   night = 0
 )
 
-head(log_rss(m1, s1, s2)$df)
+head(log_rss(m1, s1, s2, ci = "se")$df)
 
-log_rss(m1, x1, x2)$df |> 
+log_rss(m1, x1, x2, ci = "se")$df |> 
   mutate(day = ifelse(night_x1 == 1, "night", "day")) |> 
   ggplot(aes(dforest_x1, log_rss, col = factor(day))) + 
   geom_line() +
+  geom_ribbon(aes(ymin = lwr, ymax = upr), alpha = 0.1) +
   theme_minimal() +
   labs(x = "Distance to forest (scaled)", y = "log(RSS)", 
        col = "Time of day") +
   geom_hline(yintercept = 0, lty = 2) 
   
 
-m1$model
+summary(m1)
+
+# Interaction two categorical covariates
+forest <- get_sh_forest()
+m2 <- deer %>% steps_by_burst() %>% random_steps() %>% 
+  extract_covariates(forest) %>% 
+  time_of_day() |> 
+  mutate(night = as.numeric(tod_end_ == "night")) |> 
+  fit_ssf(case_ ~ forest + forest:night + strata(step_id_), model = TRUE)
+summary(m2$model)
+
+# Now lets calculate log RSS for different situations
+
+# - log RSS for forest for day
+s1 <- data.frame(forest = 1, night = 0)
+s2 <- data.frame(forest = 0, night = 0)
+log_rss(m2, s1, s2, ci = "se")$df
+
+# - log RSS for forest for night
+s1 <- data.frame(forest = 1, night = 1)
+s2 <- data.frame(forest = 0, night = 1)
+log_rss(m2, s1, s2, ci = "se")$df
 
 
 # Generalized Linear Hypothesis Tests ------------------------------------------

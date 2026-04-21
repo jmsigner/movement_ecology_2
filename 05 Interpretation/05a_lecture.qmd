@@ -275,7 +275,7 @@ ct[1] / ct[2]
 
 -----
 
-The same with the `log_rss()`-functino in `amt`: 
+The same with the `log_rss()`-function in `amt`: 
 
 ```{r}
 x1 <- data.frame(forest = 1)
