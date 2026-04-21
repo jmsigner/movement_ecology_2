@@ -122,9 +122,9 @@ class: inverse
 ---
 class: center, middle
 
-Recall that the $\beta$s from a fitted exponential habitat selection model can be interpreted as the log-RSS for a one-unit change in that covariate.
+Recall that the $\beta$ for a habitat variable measures selection for that variable.
 
-**What if the log-RSS depends on another variable?**
+**What if the selection depends on another variable?**
 
 ---
 class: center, middle
@@ -230,7 +230,7 @@ The main effect $(\beta_1)$ is the intercept, and the interaction slope $(\beta_
 
 $$\beta^*_1 = f(x_2) = \beta_1 + \beta_3 x_2$$
 
-Since the $\beta$s in our analyses can be interpreted as log-RSS, interactions allow us to define the log-RSS for a one-unit change in one variable as a *function* of another variable.
+Since the $\beta$s in our analyses measure selection, interactions allow us to selection as a *function* of another variable.
 
 ---
 
@@ -347,7 +347,7 @@ class: inverse
   
 - Interactions can be thought of as expressing the slope of one of the interacting variables as a function of the other variable.
 
-- Since our slope parameters are directly interpretable as log-RSS, interactions allow us to write the log-RSS for a variable as a function of another variable.
+- Since our slope parameters measure selection, interactions allow us to model selection as a function of another variable.
 
 - Interactions with a parabola should include both the linear and quadratic terms.
 
