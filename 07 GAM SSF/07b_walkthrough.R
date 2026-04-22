@@ -52,6 +52,7 @@ m <- gam(cbind(times, id_step_id_) ~
 
 summary(m)
 
+# Plot from the 'gratia' package
 draw(m)
 
 # Predict log-RSS
@@ -63,13 +64,14 @@ x2 <- data.frame(elev = 2200,
                  sl_ = 1000,
                  ta_ = 0)
 
-# Predict
-g1 <- predict(m, newdata = x1, type = "link")
-g2 <- predict(m, newdata = x2, type = "link")
+# Calculate the linear predictor
+g1 <- as.vector(predict(m, newdata = x1, type = "link"))
+g2 <- as.vector(predict(m, newdata = x2, type = "link"))
 
-# Log-rss
+# log-RSS is just the difference in linear predictors
 lr <- x1 %>% 
-  mutate(log_rss = as.vector(g1) - as.vector(g2),
+  mutate(log_rss = g1 - g2,
+         # Exponentiate to get RSS
          rss = exp(log_rss))
 
 # Plot
@@ -77,21 +79,67 @@ ggplot(lr, aes(x = elev, y = rss)) +
   geom_line() +
   geom_hline(yintercept = 1, color = "red", 
              linetype = "dashed") +
+  labs(x = "Elevation (m)", y = "RSS") +
   theme_bw()
+
+# For models fitted with glm() or clogit(), amt::log_rss() 
+# will calculate confidence intervals for you. We don't (yet)
+# have support for models fitted with gam().
 
 # If you wanted to construct the confidence intervals with
 # standard errors, you need the design matrix, coefficient
 # vector, and variance-covariance matrix.
 
 # Get the design matrix
-predict(m, newdata = x1, type = "lpmatrix")
-# Get the coefficient vector
-coef(m)
-# Get the variance-covariance matrix
-vcov(m)
+X1 <- predict(m, newdata = x1, type = "lpmatrix")
+X2 <- predict(m, newdata = x2, type = "lpmatrix")
 
-# Process data for multiple individuals ----
-# Load the GPS data
+# Calculate a matrix of the difference between X1 and X2
+D <- sweep(X1, 2, X2)
+
+# Get the coefficient vector
+B <- coef(m)
+# Get the variance-covariance matrix
+S <- vcov(m)
+
+# Incidentally, we can also calculate log-RSS from the 
+# difference matrix and the vector of betas
+LR <- D %*% B
+all.equal(as.vector(LR), lr$log_rss)
+
+# Variance for the prediction
+var_pred <- as.vector(diag(D %*% S %*% t(D)))
+# SE for the prediction
+SE <- sqrt(var_pred)
+
+# Calculate 95% confidence interval
+lr <- lr %>% 
+  mutate(se = SE,
+         log_lwr = log_rss - 1.96*se,
+         log_upr = log_rss + 1.96*se) %>% 
+  # Exponentiate to get RSS
+  mutate(rss = exp(log_rss),
+         lwr = exp(log_lwr),
+         upr = exp(log_upr))
+
+# Plot
+ggplot(lr, aes(x = elev, y = rss)) +
+  geom_ribbon(aes(ymin = lwr, ymax = upr),
+              fill = "gray80") +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = 1, color = "red", 
+             linetype = "dashed") +
+  geom_vline(xintercept = x2$elev, linetype = "dashed") +
+  labs(x = "Elevation (m)", y = "RSS") +
+  theme_bw()
+
+# Example with multiple individuals ----
+# Note there are only 3 individuals in the data
+# Note that they are different species!
+#   - C028 = coyote
+#   - F53 & F64 = cougars
+
+# Load the GPS data and format
 multi <- read.csv("data/coyote_cougar.csv") %>% 
   mutate(t_ = ymd_hms(t_)) %>% 
   # Create a nested data.frame
@@ -115,14 +163,21 @@ multi <- read.csv("data/coyote_cougar.csv") %>%
          times = 1)
 
 # Fit model with a random slope for elevation
+# This takes ~ 1.5 minutes to fit.
 
-m2 <- gam(cbind(times, id_step_id_) ~ 
-            s(elev, bs = "cr", k = 20) +
-            s(elev, id, bs = "re") +
-            log(sl_) + sl_ + cos(ta_),
-          data = multi,
-          family = cox.ph,
-          weights = case_)
+system.time({
+  m2 <- gam(cbind(times, id_step_id_) ~ 
+              # Habitat selection
+              s(elev, bs = "cr", k = 20) +
+              # Random slopes
+              s(elev, id, bs = "re") +
+              # Movement
+              log(sl_) + sl_ + cos(ta_),
+            data = multi,
+            family = cox.ph,
+            weights = case_)
+}) # 105 sec
+
 
 summary(m2)
 

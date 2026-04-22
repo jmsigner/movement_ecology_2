@@ -19,7 +19,7 @@ editor: source
 
 ::: {.column width=45%}
 
-- In module 5 (SSFs, part 2), we used interactions in our models to allow selection to vary as a *function* of another covariate.
+- In module 4 (SSFs, part 2), we used interactions in our models to allow selection to vary as a *function* of another covariate.
   - We used linear functions.
   - We used quadratic functions.
 - Now, we want to generalize that further and *estimate the function*.
@@ -35,7 +35,7 @@ editor: source
 </br>
 
 <center>
-![Selection for $x_1$ as a linear function of $x_2$.](../05 SSF 2/figs/beta_star_1.png)
+![Selection for $x_1$ as a linear function of $x_2$.](../04 SSF 2/figs/beta_star_1.png)
 </center>
 
 :::
@@ -155,6 +155,10 @@ $$\beta_0 x^0 + \beta_1 x^1 + \beta_2 x^2 + \beta_3 x^3$$
 - We can fit an ordinary linear model to these data, using polynomial basis expansions.
 
 ```{r}
+#| echo: false
+#| fig-align: center
+#| lightbox: true
+
 # Set color palette
 palette("dark2")
 
@@ -184,6 +188,8 @@ plot(x, y)
 ```{r}
 #| echo: true
 #| code-fold: true
+#| fig-align: center
+#| lightbox: true
 
 poly1 <- lm(y ~ x)
 
@@ -198,6 +204,8 @@ abline(poly1, col = 1, lwd = 2)
 ```{r}
 #| echo: true
 #| code-fold: true
+#| fig-align: center
+#| lightbox: true
 
 poly2 <- lm(y ~ x + I(x^2))
 
@@ -214,6 +222,8 @@ lines(pred2$x, pred2$y, col = 2, lwd = 2)
 ```{r}
 #| echo: true
 #| code-fold: true
+#| fig-align: center
+#| lightbox: true
 
 poly3 <- lm(y ~ x + I(x^2) + I(x^3))
 
@@ -230,6 +240,8 @@ lines(pred3$x, pred3$y, col = 3, lwd = 2)
 ```{r}
 #| echo: true
 #| code-fold: true
+#| fig-align: center
+#| lightbox: true
 
 poly6 <- lm(y ~ x + I(x^2) + I(x^3) + I(x^4) + I(x^5) + I(x^6))
 
@@ -246,6 +258,8 @@ lines(pred6$x, pred6$y, col = 4, lwd = 2)
 ```{r}
 #| echo: true
 #| code-fold: true
+#| fig-align: center
+#| lightbox: true
 
 poly10 <- lm(y ~ poly(x, 10))
 
@@ -262,6 +276,8 @@ lines(pred10$x, pred10$y, col = 5, lwd = 2)
 ```{r}
 #| echo: true
 #| code-fold: true
+#| fig-align: center
+#| lightbox: true
 
 poly25 <- lm(y ~ poly(x, 25))
 
@@ -277,6 +293,8 @@ lines(pred25$x, pred25$y, col = 6, lwd = 2)
 
 ```{r}
 #| echo: false
+#| fig-align: center
+#| lightbox: true
 
 plot(x, y, main = "Polynomial Basis")
 lines(pred25$x, pred25$y, col = 6, lwd = 2)
@@ -309,6 +327,7 @@ While we use them all the time, polynomial basis expansions aren't actually all 
 ```{r}
 #| echo: false
 #| fig-align: center
+#| lightbox: true
 
 plot(x, y, main = "Polynomial Basis", 
      xlim = c(-1.2, 1.2), ylim = c(-4, 10))
@@ -329,6 +348,7 @@ We need some method to obtain *parsimony*. Just from the eye test, it doesn't se
 ```{r}
 #| echo: false
 #| fig-align: center
+#| lightbox: true
 
 plot(x, y, main = "Polynomial Basis")
 lines(pred25$x, pred25$y, col = 6, lwd = 2)
