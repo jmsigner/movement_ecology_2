@@ -16,17 +16,16 @@ output: github_document
 ## Day 2
 4. SSF 2 (B)
 5. Interpretation (J)
-6. Mixed RSF/SSF and multiple models (J)
 
 ## Day 3
+6. Mixed RSF/SSF and multiple models (J)
 7. GAM-SSF (B)
-8. Validation (B)
-9. HMM (J)
 
 ## Day 4
-10. State-switching SSFs (J)
-11. Simulating from fitted SSFs (J)
-12. Q&A (both)
+8. State-switching SSFs (J)
+9. Simulating from fitted SSFs (J)
+10. Validation (B)
+11. Q&A (both)
 
 
 # Recommended reading
