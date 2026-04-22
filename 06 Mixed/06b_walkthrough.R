@@ -18,6 +18,7 @@ library(terra)
 library(tictoc)
 library(boot)
 library(broom.mixed)
+library(survival)
 
 # Prepare data --------------
 #' 
@@ -204,6 +205,9 @@ m.ind <- dat.summer |> nest(data = -c(id, sex)) |>
   ))
 toc()
 
+
+m.ind$mod[[1]]
+
 #' ## Summarize results, t-based confidence intervals
 #' 
 #' Now, summarize fits to individual animals. First, we will unnest mod
@@ -327,7 +331,7 @@ mixedSSA.tmp <- glmmTMB(
   y ~ -1 + dist_built_up_end + dist_built_up_end:night + 
     log(sl_) + sl_ + cos(ta_) +
     (1 | id_step_id_) + # Note, this should be our first random effect!
-    (0+ sl_|id) + (0+log(sl_) | id) + (0 + cos(ta_) | id) +
+    (0 + sl_|id) + (0+log(sl_) | id) + (0 + cos(ta_) | id) +
     (0 + dist_built_up_end | id) + (0 + dist_built_up_end:night | id),
   family=poisson(), data = dat.summer,
   doFit=FALSE)
@@ -342,7 +346,6 @@ toc()
 
 
 # Comparing the results
-#' Two step estimates (output from 3_two_step.R)
 #' 
 #' Models fit using glmmTMB
 mixedssa1.means <-data.frame(term = rownames(summary(MixedSSA)$coef$cond),
