@@ -128,9 +128,11 @@ set.seed(123333)
 
 # We will use an example data set of a African buffalo here. This data set has
 # been used as a case study in many other papers.
-cilla <- read_rds(here::here("Day4_SSFs_advanced/01_Simulations/data/cilla.rds"))
-env <- rast(read_rds(here::here("Day4_SSFs_advanced/01_Simulations/data/env_covar.rds")))
+cilla <- read_rds(here::here("data/simulation/cilla.rds"))
+env <- rast(read_rds(here::here("data/simulation/env_covar.rds")))
 
+cilla
+env
 
 # The first step is to prepare the data to fit an iSSF model. `cilla` is already
 # and `amt` track.
@@ -247,13 +249,23 @@ ssf_cilla <- cilla %>% steps_by_burst() %>% random_steps() %>%
   extract_covariates(env1, where = "both") 
 
 # We can double check this again
-ssf_cilla %>% select(starts_with("water"))
+ssf_cilla %>% dplyr::select(starts_with("water"))
 
 # In the model we now create a new variable on the fly, that checks if the start
 # and end position are on the same side of the river.
+
+# Remove NA steps
+nrow(ssf_cilla)
+ssf_cilla <- ssf_cilla[!is.na(ssf_cilla$water_dist_end), ]
+ssf_cilla <- ssf_cilla[!is.na(ssf_cilla$water_crossed_end), ]
+ssf_cilla <- ssf_cilla[!is.na(ssf_cilla$water_crossed_start), ]
+nrow(ssf_cilla)
+
 m_3 <- fit_clogit(ssf_cilla, case_ ~ cos(ta_) + sl_ + log(sl_) + 
-                    water_dist_end + x2_ + y2_ + I(x2_^2 + y2_^2) +
-                    I(water_crossed_end != water_crossed_start) + strata(step_id_))
+                    water_dist_end + 
+                    x2_ + y2_ + I(x2_^2 + y2_^2) +
+                    I(water_crossed_end != water_crossed_start) + 
+                    strata(step_id_))
 
 # And see the model summary
 summary(m_3)
