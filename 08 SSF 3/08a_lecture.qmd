@@ -107,8 +107,8 @@ $$
 $$
 
 -   $\gamma_{1,1}^{(t)}$ and $\gamma_{2,2}^{(t)}$ are the probabilities to remain in the first or second state, respectively.
--   $\gamma_{1,2}^{(t)}$ is the probability to change from state one to stat two.
--   $\gamma_{2,1}^{(t)}$ is the probability to change from state one to stat two.
+-   $\gamma_{1,2}^{(t)}$ is the probability to change from state one to state two.
+-   $\gamma_{2,1}^{(t)}$ is the probability to change from state one to state two.
 -   *Note, transition probabilities can also be modeled as a function of covariates.*
 
 ## How to choose starting values
