@@ -17,10 +17,10 @@ library(survMisc)
 # Simulated data ----
 # We saved the dataset we simulated in module 3.
 # We can load it here.
-gps <- read.csv("02 RSF/module05_HSF_data.csv")
+gps <- read.csv("02 RSF/module02_HSF_data.csv")
 
 # Load habitat rasters
-hab <- rast("02 HSF/geo/habitat.tif")
+hab <- rast("02 RSF/geo/habitat.tif")
 names(hab) <- c("forage", "temp", "predator", "cover")
 
 # Cover is a factor, let's code it that way
@@ -233,9 +233,9 @@ test_bins <- test_bins |>
 #   2. calculating the correlation
 
 # Plot
-ggplot(test_bins, aes(x = w, y = obs_per_cell)) +
+ggplot(test_bins, aes(x = rank(w), y = rank(obs_per_cell))) +
   geom_point() +
-  geom_smooth() +
+  geom_smooth(method = "lm") +
   coord_cartesian(ylim = c(0, NA)) +
   theme_bw()
 

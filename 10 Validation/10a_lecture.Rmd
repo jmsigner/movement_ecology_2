@@ -3,7 +3,7 @@ title: "Habitat Selection Model Validation"
 subtitle: "\"Is my model any good?\""
 author: "Brian J. Smith"
 institute: "Analysis of Animal Movement Data in R"
-date: "22 April 2026"
+date: "23 April 2026"
 output:
   xaringan::moon_reader:
     seal: false
@@ -31,7 +31,7 @@ class: center, middle, inverse
 ## "Is my model any good?"
 
 Brian J. Smith  
-22 April 2026
+23 April 2026
 
 *Analysis of Animal Movement Data in R*  
 J. Signer & B. Smith  

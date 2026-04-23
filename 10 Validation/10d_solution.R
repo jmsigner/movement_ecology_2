@@ -1,11 +1,11 @@
 #######################################################X
 #----Analysis of Animal Movement Data in R Workshop----X
-#----------------Module 08 -- Validation---------------X
+#----------------Module 10 -- Validation---------------X
 #----------------Last updated 2026-04-19---------------X
 #-------------------Exercise Solution------------------X
 #######################################################X
 
-# Refitting the cougar iSSF from module 5.
+# Refitting the cougar iSSF from module 4.
 
 # Load packages ----
 library(tidyverse)
