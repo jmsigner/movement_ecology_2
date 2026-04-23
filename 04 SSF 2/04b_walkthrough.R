@@ -193,7 +193,7 @@ expand.grid(ta = seq(-pi, pi, length.out = 100),
   rowwise() %>% 
   mutate(y = circular::dvonmises(ta, mu = mu, kappa = k_abs)) %>% 
   ggplot(aes(x = ta, y = y, color = tod, group = tod)) +
-  geom_line(size = 1) +
+  geom_line(linewidth = 1) +
   xlab("Turn Angle (radians)") +
   ylab("Probability Density") +
   scale_color_manual(name = "ToD", breaks = c("day", "night"),
