@@ -1,0 +1,23 @@
+.reveal .title-slide .footer {
+  display: none;
+}
+
+.timer {
+  text-align: center;
+}
+
+.reveal p,
+.reveal li {
+  font-size: 0.9em;
+}
+
+/* Make H2 bigger and bold */
+.reveal h2 {
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+/* Make H3 bold */
+.reveal h3 {
+  font-weight: 600;
+}
